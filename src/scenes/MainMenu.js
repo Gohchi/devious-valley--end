@@ -4,7 +4,7 @@ import { windowHeight, windowWidth } from '../config'
 import { text, font, style } from '../lib/common'
 
 class SimpleMenu {
-  constructor(scene, x, y, style, hidden = false){
+  constructor(scene, x, y, style, sounds = { change: null, selector: null, cancel: null }, hidden = false){
     this.list = [];
     this.actions = [];
     this.selected = 0;
@@ -14,13 +14,25 @@ class SimpleMenu {
     this.scene = scene;
     this.hidden = hidden;
     this.events = {};
+    this.customKeys = [];
+    
+    this.sounds = sounds;
   }
   onKey( keyCode, action ){
-    switch (keyCode){
-      case 'ESC':
-        this.events.up = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
-          .on('down', action);
-        break;
+    this.customKeys.push({ keyCode, action });
+    return this;
+  }
+  addOnKeys(){
+    for( let { keyCode, action} of this.customKeys ){
+      switch ( keyCode ){
+        case 'ESC':
+          this.events.up = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+            .on('down', () => {
+              this.sounds.cancel.play();
+              action();
+            });
+          break;
+      }
     }
     return this;
   }
@@ -51,6 +63,7 @@ class SimpleMenu {
     this.scene.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.UP)
     this.scene.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
     this.scene.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
+    this.scene.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.ESC)
     
     for(let item of this.list){
       item.setAlpha(0);
@@ -89,6 +102,7 @@ class SimpleMenu {
       .on('down', e => {
         if( this.selected > 0 ){
           this.selected--;
+          this.sounds.change.play();
         }
         this.updateView();
       });
@@ -96,15 +110,18 @@ class SimpleMenu {
       .on('down', e => {
         if( this.selected < this.list.length-1 ){
           this.selected++;
+          this.sounds.change.play();
         }
         this.updateView();
       });
       
     this.events.enter = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
       .on('down', e => {
+        this.sounds.selector.play();
         this.selectItem();
       });
       
+    this.addOnKeys();
     this.updateView();
   }
 }
@@ -118,6 +135,11 @@ export default class extends Phaser.Scene {
 
     this.load.audio('wind-chimes', 'assets/audio/wind_chimes.mp3', { instances: 1 });
     this.load.audio('main-menu', 'assets/audio/songs/main-menu.mp3', { instances: 1 });
+
+    this.load.audio('menu-change', 'assets/audio/menu-change.mp3', { instances: 1 });
+    this.load.audio('menu-selector', 'assets/audio/menu-selector.mp3', { instances: 1 });
+    this.load.audio('menu-cancel', 'assets/audio/menu-cancel.mp3', { instances: 1 });
+
   }
 
   create () {
@@ -169,10 +191,16 @@ export default class extends Phaser.Scene {
       fontSize: '22px'
     }).setOrigin(0.5, 0.5);
     
+    
+    let sounds = {
+      change: this.sound.add('menu-change', {volume: 0.5}),
+      selector: this.sound.add('menu-selector', {volume: 0.5}),
+      cancel: this.sound.add('menu-cancel', {volume: 0.5})
+    };
     let optionsMenu = new SimpleMenu(this, windowWidth / 2, windowHeight / 1.8, {
       fontFamily: font.Title,
       fontSize: '28px'
-    }, true).onKey('ESC', () => { optionsMenu.hide(); mainMenu.show(true) })
+    }, sounds, true).onKey('ESC', () => { optionsMenu.hide(); mainMenu.show(true); })
       .add('Audio', () => console.log('Audio selected'))
       .add('Video', () => console.log('Video selected'));
       
@@ -180,7 +208,7 @@ export default class extends Phaser.Scene {
     let mainMenu = new SimpleMenu(this, windowWidth / 2, windowHeight / 1.8, {
       fontFamily: font.Title,
       fontSize: '28px'
-    }, true)
+    }, sounds, true)
       .add('New game', () => console.log('new game selected'))
       .addIf(this.saveExists, 'Continue', () => console.log('continue selected'))
       .add('Options', () => { mainMenu.hide(); optionsMenu.show(true) })
