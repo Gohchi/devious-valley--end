@@ -1,31 +1,47 @@
 import Phaser from 'phaser'
 
-import { text, font, style } from '../lib/common'
-
 export default class extends Phaser.Scene {
   constructor () {
     super({ key: 'LoadGameScene' })
   }
 
   preload () {
-    this.loadingText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'LOADING', {
-      fontFamily: font.Title,
-      fontSize: '22px'
-    }).setOrigin(0.5, 0.5);
-    // this.load.image('base-button', 'assets/base-button.png'),
-
-    // this.load.audio('wind-chimes', 'assets/audio/wind_chimes.mp3', { instances: 1 });
-    // this.load.audio('main-menu', 'assets/audio/songs/main-menu.mp3', { instances: 1 });
-
-    // this.load.audio('menu-change', 'assets/audio/menu-change.mp3', { instances: 1 });
-    // this.load.audio('menu-selector', 'assets/audio/menu-selector.mp3', { instances: 1 });
-    // this.load.audio('menu-cancel', 'assets/audio/menu-cancel.mp3', { instances: 1 });
-
   }
 
   create () {
+    this.bggraphics = this.add.graphics({ lineStyle: { color: 0x00aaaa, alpha: .2 }, fillStyle: { color: 0x00aaaa } });
+    
+    let ellipse = new Phaser.Geom.Ellipse(this.sys.game.config.width - 80, this.sys.game.config.height - 70, 7, 7);
+    let ellipseCenter = Phaser.Geom.Ellipse.Clone(ellipse).setSize(60);
+
+    this.bgellipses = [];
+
+    for(let i = 0; i < 10; i++)
+    {
+      ellipse = Phaser.Geom.Ellipse.Clone(ellipse);
+
+      Phaser.Geom.Ellipse.CircumferencePoint(ellipseCenter, i / 10 * Phaser.Math.PI2, ellipse);
+
+      this.bgellipses.push(ellipse);
+    }
+    this.pointSelected = 0;
   }
   
   update() {
+    let graphics = this.bggraphics, ellipses = this.bgellipses;
+    graphics.clear();
+
+    this.pointSelected++;
+    if( this.pointSelected >= 10 ){
+      this.pointSelected = 0;
+    }
+    for(let i in ellipses) {
+      if(this.pointSelected == i){
+        graphics.fillEllipseShape(ellipses[i]);
+      } else {
+        graphics.strokeEllipseShape(ellipses[i]);
+      }
+
+    }
   }
 }
