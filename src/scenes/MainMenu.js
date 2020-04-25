@@ -1,6 +1,5 @@
 import Phaser from 'phaser'
 
-import { windowHeight, windowWidth } from '../config'
 import { text, font, style } from '../lib/common'
 
 class SimpleMenu {
@@ -79,14 +78,15 @@ class SimpleMenu {
     }
     
     this.scene.addAnimation(this.list, {
-      alpha: {
-        ease: 'Power0',
-        from: 0,
-        start: 0,
-        to: 0.5,
-      }
-    }, 500)
-    .setCallback('onComplete', o => this.enableKeys(), []);
+        alpha: {
+          ease: 'Power0',
+          from: 0,
+          start: 0,
+          to: 0.5,
+        }
+      }, 500)
+      .setCallback('onComplete', o => this.enableKeys(), [])
+    ;
   }
   selectItem(){
     this.actions[this.selected]();
@@ -156,7 +156,7 @@ export default class extends Phaser.Scene {
     // this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#dddddd");
     this.bggraphics = this.add.graphics({ lineStyle: { color: 0x00aaaa } });
 
-    let ellipse = new Phaser.Geom.Ellipse(windowWidth / 2, windowHeight / 2, 0, 0);
+    let ellipse = new Phaser.Geom.Ellipse(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 0, 0);
 
     this.bgellipses = [ellipse];
 
@@ -172,11 +172,36 @@ export default class extends Phaser.Scene {
     }
     //#endregion
     
-    this.titleText = this.add.text( windowWidth / 2, windowHeight / 3, text.Title, style.Title )
+    //#region mask
+    // const maskBaseValue = 200;
+    // const maskX = this.sys.game.config.width / 2 - maskBaseValue, maskY = this.sys.game.config.height/ 2 - maskBaseValue;
+    // const maskShape = new Phaser.Geom.Rectangle( maskX, maskY, maskBaseValue*2, maskBaseValue*2 );
+    // const maskGfx = this.make.graphics()
+    //     .setDefaultStyles({
+    //         fillStyle: {
+    //             // color: 0x000000,
+    //             // color: 0xffffff,
+    //             alpha: .1
+    //         }
+    //     })
+    //     .fillRectShape(maskShape)
+    //     .generateTexture('mask')
+    // ;
+    // this.mask = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'mask')
+    //     // .setPosition( 0, 0)
+    //     // .setOrigin(0.5)
+    // ;
+    // this.cameras.main.setMask(
+    //   new Phaser.Display.Masks.BitmapMask(this, this.mask)
+    // );
+    //#endregion
+    //#region title
+    this.titleText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 3, text.Title, style.Title )
       .setOrigin(0.5, 0.5);
     this.versionText = this.add.text( this.titleText.x + this.titleText.width*.34, this.titleText.y - this.titleText.height*.08, text.Version, style.Version )
+    //#endregion
 
-    // this.add.image( windowWidth / 2, windowHeight / 1.5, 'base-button')
+    // this.add.image( this.sys.game.config.width / 2, this.sys.game.config.height / 1.5, 'base-button')
     //   .setOrigin(0.5, 0.5)
     //   .setScale(2, 1)
     //   // .setAlpha()
@@ -186,18 +211,17 @@ export default class extends Phaser.Scene {
     //     });
 
     //#region menu
-    this.pressAnyButtonText = this.add.text( windowWidth / 2, windowHeight / 1.5, 'PRESS ANY BUTTON', {
+    this.pressAnyButtonText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 1.5, 'PRESS ANY BUTTON', {
       fontFamily: font.Title,
       fontSize: '22px'
     }).setOrigin(0.5, 0.5);
-    
     
     let sounds = {
       change: this.sound.add('menu-change', {volume: 0.5}),
       selector: this.sound.add('menu-selector', {volume: 0.5}),
       cancel: this.sound.add('menu-cancel', {volume: 0.5})
     };
-    let optionsMenu = new SimpleMenu(this, windowWidth / 2, windowHeight / 1.8, {
+    let optionsMenu = new SimpleMenu(this, this.sys.game.config.width / 2, this.sys.game.config.height / 1.8, {
       fontFamily: font.Title,
       fontSize: '28px'
     }, sounds, true).onKey('ESC', () => { optionsMenu.hide(); mainMenu.show(true); })
@@ -205,17 +229,32 @@ export default class extends Phaser.Scene {
       .add('Video', () => console.log('Video selected'));
       
     this.saveExists = true;
-    let mainMenu = new SimpleMenu(this, windowWidth / 2, windowHeight / 1.8, {
+    let mainMenu = new SimpleMenu(this, this.sys.game.config.width / 2, this.sys.game.config.height / 1.8, {
       fontFamily: font.Title,
       fontSize: '28px'
     }, sounds, true)
-      .add('New game', () => console.log('new game selected'))
+      .add('New game', () => {
+          mainMenu.hide();
+          this.addAnimation(this.cameras.main, {
+              alpha: {
+                ease: 'Power0',
+                from: 1,
+                start: 1,
+                to: 0,
+              }
+            })
+            .setCallback('onComplete', o => {
+              this.scene.start('LoadGameScene')
+            }, [])
+          ;
+        }
+      )
       .addIf(this.saveExists, 'Continue', () => console.log('continue selected'))
       .add('Options', () => { mainMenu.hide(); optionsMenu.show(true) })
       .add('Quit', () => this.game.destroy(true))
     //#endregion
 
-    // this.copyrightText = this.add.text( windowWidth / 2, windowHeight / 1.1, 'Devious Valley™ --end / ©2020 , Inc.', {
+    // this.copyrightText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 1.1, 'Devious Valley™ --end / ©2020 , Inc.', {
     //   fontFamily: font.Title,
     //   fontSize: '18px'
     // }).setOrigin(0.5, 0.5);
@@ -237,18 +276,19 @@ export default class extends Phaser.Scene {
       this.soundWindChime.play();
       
       this.addAnimation(this.pressAnyButtonText, {
-        scaleX: propertyConfig,
-        scaleY: propertyConfig,
-        alpha: {
-          ease: 'Power0',
-          from: 1,
-          start: 1,
-          to: 0,
-        }
-      })
+          scaleX: propertyConfig,
+          scaleY: propertyConfig,
+          alpha: {
+            ease: 'Power0',
+            from: 1,
+            start: 1,
+            to: 0,
+          }
+        })
         .setCallback('onComplete', o => {
           mainMenu.show();
-        }, []);
+        }, [])
+      ;
     });
   }
   

@@ -4,12 +4,13 @@ import BootScene from './scenes/Boot'
 // import SplashScene from './scenes/Splash'
 // import GameOverScene from './scenes/GameOver'
 import MainMenu from './scenes/MainMenu'
+import LoadGameScene from './scenes/Load-Game'
 // import GameScene from './scenes/Game'
 
 import config from './config'
 
 const gameConfig = Object.assign(config, {
-  scene: [MainMenu, BootScene], //GameScene, SplashScene, GameOverScene 
+  scene: [MainMenu, BootScene, LoadGameScene], //GameScene, SplashScene, GameOverScene 
   pixelArt: false,
   physics: {
     default: 'arcade',
