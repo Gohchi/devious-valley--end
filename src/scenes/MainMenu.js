@@ -117,10 +117,13 @@ export default class extends Phaser.Scene {
     this.load.image('base-button', 'assets/base-button.png'),
 
     this.load.audio('wind-chimes', 'assets/audio/wind_chimes.mp3', { instances: 1 });
+    this.load.audio('main-menu', 'assets/audio/songs/main-menu.mp3', { instances: 1 });
   }
 
   create () {
     //#region music
+    this.song = this.sound.add('main-menu', {volume: 0.2});
+    this.song.play();
     //#endregion
 
     //#region sounds
@@ -129,6 +132,22 @@ export default class extends Phaser.Scene {
 
     //#region background
     // this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#dddddd");
+    this.bggraphics = this.add.graphics({ lineStyle: { color: 0x00aaaa } });
+
+    let ellipse = new Phaser.Geom.Ellipse(windowWidth / 2, windowHeight / 2, 0, 0);
+
+    this.bgellipses = [ellipse];
+
+    for(let i = 0; i < 100; i++)
+    {
+        ellipse = Phaser.Geom.Ellipse.Clone(ellipse);
+        ellipse.width += 1.5;
+        ellipse.height += 0.7;
+
+        Phaser.Geom.Ellipse.CircumferencePoint(ellipse, i / 20 * Phaser.Math.PI2, ellipse);
+
+        this.bgellipses.push(ellipse);
+    }
     //#endregion
     
     this.titleText = this.add.text( windowWidth / 2, windowHeight / 3, text.Title, style.Title )
@@ -206,6 +225,24 @@ export default class extends Phaser.Scene {
   }
   
   update() {
+    //#region background
+    let graphics = this.bggraphics, ellipses = this.bgellipses;
+    graphics.clear();
+
+    for(var i = 0; i < ellipses.length; i++)
+    {
+        ellipses[i].width += 1.5;
+        ellipses[i].height += 0.7;
+
+        if(ellipses[i].width > 1000)
+        {
+            ellipses[i].width = 0;
+            ellipses[i].height = 0;
+        }
+
+        graphics.strokeEllipseShape(ellipses[i]);
+    }
+    //#endregion
   }
 
   addAnimation( target, config, duration = 1000 ){
