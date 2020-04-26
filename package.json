@@ -57,7 +57,8 @@
         "build": "webpack --config webpack.prod.js",
         "start": "webpack --config webpack.dev.js",
         "exec": "nwbuild -r ./",
-        "export": "node export-nw"
+        "export": "node nw/export",
+        "nw": "node nw/run"
     },
     "version": "0.1.0-alpha",
     "webexe_settings": {

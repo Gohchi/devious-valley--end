@@ -295,15 +295,15 @@ export default class extends Phaser.Scene {
       ;
     });
 
-    this.textJoypadInfo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#ffffff' });
-    this.joypadAdded = false;
+    // this.textJoypadInfo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#ffffff' });
+    // this.joypadAdded = false;
   }
   
   update() {
-    this.checkJoypad()
-    //#region joypad
-    this.joypadTest();
-    //#endregion
+    // this.checkJoypad()
+    // //#region joypad
+    // this.joypadTest();
+    // //#endregion
 
     //#region background
     let graphics = this.bggraphics, ellipses = this.bgellipses;
@@ -442,6 +442,7 @@ export default class extends Phaser.Scene {
     }
   }
 
+  //#region joypad
   checkJoypad(){
     
     if (this.joypadAdded || this.input.gamepad.total === 0)
@@ -523,4 +524,5 @@ export default class extends Phaser.Scene {
     
     this.textJoypadInfo.setText(debug);
   }
+  //#endregion
 }

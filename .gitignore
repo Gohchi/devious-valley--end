@@ -1,7 +1,7 @@
 *.log
 .vscode/
-build/
-cache/
 dist/
 node_modules/
 notes/
+nw/build/
+nw/cache/
