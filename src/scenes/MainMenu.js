@@ -143,6 +143,7 @@ export default class extends Phaser.Scene {
   }
 
   create () {
+    this.saves = [1,2];
     //#region music
     this.song = this.sound.add('main-menu', {volume: 0.2});
     this.song.play();
@@ -195,6 +196,7 @@ export default class extends Phaser.Scene {
     //   new Phaser.Display.Masks.BitmapMask(this, this.mask)
     // );
     //#endregion
+    
     //#region title
     this.titleText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 3, text.Title, style.Title )
       .setOrigin(0.5, 0.5);
@@ -249,7 +251,10 @@ export default class extends Phaser.Scene {
           ;
         }
       )
-      .addIf(this.saveExists, 'Continue', () => console.log('continue selected'))
+      .addIf(this.saveExists, 'Continue', () => {
+        mainMenu.hide();
+        this.selectContinue( () => mainMenu.show(true) );
+      } )
       .add('Options', () => { mainMenu.hide(); optionsMenu.show(true) })
       .add('Quit', () => this.game.destroy(true))
     //#endregion
@@ -315,5 +320,118 @@ export default class extends Phaser.Scene {
 
   addAnimation( target, config, duration = 1000 ){
     return this.tweens.add(Object.assign({}, config, { targets: target, duration }));
+  }
+  
+  selectContinue(callback){
+    //#region menu continue
+    let selected = 0;
+    const x = 0; // this.sys.game.config.width / 2;
+    const w = this.sys.game.config.width;
+    const h = this.sys.game.config.height;
+ 
+    const config = { lineStyle: { color: 0x00aaaa }, fillStyle: { color: 0x222222, alpha: .5 } };
+    const menuContinueGraphics = this.add.graphics( config );
+    // title
+    const shapeTitle = new Phaser.Geom.Rectangle( x, 0, w, 80 );
+    menuContinueGraphics.fillRectShape( shapeTitle );
+
+    const menuContinueTitleText = this.add.text( x + w / 8, shapeTitle.height/2, 'LOAD GAME', {
+      // fill: '#f22d',
+      fontFamily: font.Title,
+      fontSize: '28px',
+      fontStyle: 'bold'
+    });//.setOrigin(0.5, 0.5);
+    
+    // frame
+    const shapeFrame = new Phaser.Geom.Rectangle( x + w/8, shapeTitle.height + 10, w - w/8*2, h - (shapeTitle.height*2) );
+    menuContinueGraphics.fillStyle(0x111111, .9)
+    menuContinueGraphics.fillRectShape( shapeFrame );
+
+    // saves
+    let saveTextList = [];
+    const menuContinueSaveGraphics = this.add.graphics( config );
+    this.drawSaveList( menuContinueSaveGraphics, shapeFrame, saveTextList, selected, x + w );
+    
+    let camSaves = this.cameras.add(shapeFrame.x, shapeFrame.y, shapeFrame.width, shapeFrame.height).setScroll(shapeFrame.x + x + w, shapeFrame.y);
+    
+    this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+      .on('down', () => {
+        if( selected < this.saves.length-1 ){
+          selected++;
+          // camSaves.setScroll(camSaves.scrollX, camSaves.scrollY + 140);
+          menuContinueSaveGraphics.clear();
+          this.destroyList( saveTextList );
+          this.drawSaveList( menuContinueSaveGraphics, shapeFrame, saveTextList, selected, x + w );
+        }
+      });
+    this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP)
+      .on('down', () => {
+        if( selected > 0 ){
+          selected--;
+          // camSaves.setScroll(camSaves.scrollX, camSaves.scrollY - 140);
+          menuContinueSaveGraphics.clear();
+          this.destroyList( saveTextList );
+          this.drawSaveList( menuContinueSaveGraphics, shapeFrame, saveTextList, selected, x + w );
+        }
+      });
+      
+    this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+      .on('down', () => {
+        this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.UP)
+        this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.DOWN)
+        this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.ENTER)
+        this.input.keyboard.removeKey(Phaser.Input.Keyboard.KeyCodes.ESC)
+        menuContinueGraphics.destroy();
+        menuContinueSaveGraphics.destroy();
+        menuContinueTitleText.destroy();
+        this.destroyList( saveTextList );
+        callback();
+      });
+    //#endregion
+  }
+  destroyList( list ){
+    for( let texts of list ){
+      texts.name.destroy();
+      texts.journey.destroy();
+      texts.location.destroy();
+      texts.time.destroy();
+    }
+  }
+  drawSaveList( menuContinueSaveGraphics, shapeFrame, saveTextList, selected, fix ){
+    const lrpadding = 80, saveHeight = 120;
+
+    for( let i = 0; i < this.saves.length; i++ ){ 
+      const shapeSave = new Phaser.Geom.Rectangle( fix + shapeFrame.x + lrpadding, shapeFrame.y + 10 + (saveHeight+20)*i , shapeFrame.width - lrpadding*2, saveHeight);
+      menuContinueSaveGraphics.fillStyle(selected == i ? 0x555555 : 0x333333, 1)
+      menuContinueSaveGraphics.fillRectShape( shapeSave );
+      
+      // photo
+      menuContinueSaveGraphics.fillStyle(0x222222, 1)
+      menuContinueSaveGraphics.fillRect( shapeSave.x + 40, shapeSave.y + 10, shapeSave.height - 20, shapeSave.height - 20 );
+
+      let texts = {};
+      texts.name = this.add.text( shapeSave.x + 40 + shapeSave.height, shapeSave.y + 20, i == 0 ? 'Gravelord Eru' : 'John Titor', {
+        fontFamily: font.Title,
+        fontSize: '20px'
+      });
+      
+      texts.journey = this.add.text( shapeSave.x + 40 + shapeSave.height, shapeSave.y + 80, i == 0 ? 'Journey: 2' : '', {
+        fontFamily: font.Title,
+        fontSize: '20px'
+      });
+      
+      texts.location = this.add.text( shapeSave.x + shapeSave.width - 20, shapeSave.y + 20, i == 0 ? 'Forbidden Stadium' : 'Arduma - Main Hall', {
+        fontFamily: font.Title,
+        fontSize: '20px',
+        rtl: true
+      });
+
+      texts.time = this.add.text( shapeSave.x + shapeSave.width - 20, shapeSave.y + 80, i == 0 ? '56:39:23' : '1:23:30', {
+        fontFamily: font.Title,
+        fontSize: '20px',
+        rtl: true
+      });
+      saveTextList.push(texts);
+    }
   }
 }
