@@ -1,57 +1,83 @@
 {
-  "name": "DeviousValley--end",
-  "version": "0.1.0-alpha",
-  "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
-  "author": "Martín Farias <martin.akg1991@gmail.com>",
-  "main": "index.html",
-  "directories": {
-    "lib": "lib"
-  },
-  "dependencies": {
-    "phaser": "^3.21.0",
-    "webfontloader": "^1.6.28"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.6",
-    "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.6",
-    "browser-sync": "^2.26.7",
-    "browser-sync-webpack-plugin": "^2.2.2",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.1.1",
-    "eslint": "^5.5.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "expose-loader": "^0.7.3",
-    "file-loader": "^6.0.0",
-    "html-webpack-plugin": "^4.2.0",
-    "raw-loader": "^4.0.1",
-    "terser-webpack-plugin": "^2.3.5",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3",
-    "webpack-merge": "^4.2.2"
-  },
-  "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "start": "webpack --config webpack.dev.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Gohchi/devious-valley--end.git"
-  },
-  "keywords": [
-    "game",
-    "devious-valley", "indie",
-    "rpg", "fantasy"
-  ],
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Gohchi/devious-valley--end/issues"
-  },
-  "homepage": "https://github.com/Gohchi/devious-valley--end#readme"
+    "app_name": "devious-valley--end",
+    "author": "Martín Farias <martin.akg1991@gmail.com>",
+    "bugs": {
+        "url": "https://github.com/Gohchi/devious-valley--end/issues"
+    },
+    "dependencies": {
+        "phaser": "^3.21.0",
+        "webfontloader": "^1.6.28"
+    },
+    "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
+    "devDependencies": {
+        "@babel/core": "^7.7.5",
+        "@babel/preset-env": "^7.7.6",
+        "babel-eslint": "^10.0.3",
+        "babel-loader": "^8.0.6",
+        "browser-sync": "^2.26.7",
+        "browser-sync-webpack-plugin": "^2.2.2",
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^5.1.1",
+        "eslint": "^5.5.0",
+        "eslint-config-standard": "^12.0.0",
+        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-node": "^8.0.1",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "expose-loader": "^0.7.3",
+        "file-loader": "^6.0.0",
+        "html-webpack-plugin": "^4.2.0",
+        "nw-builder": "^3.5.7",
+        "raw-loader": "^4.0.1",
+        "terser-webpack-plugin": "^2.3.5",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.10.3",
+        "webpack-merge": "^4.2.2"
+    },
+    "directories": {
+        "lib": "lib"
+    },
+    "homepage": "https://github.com/Gohchi/devious-valley--end#readme",
+    "keywords": [
+        "game",
+        "deviousvalley",
+        "indie",
+        "rpg",
+        "fantasy"
+    ],
+    "license": "ISC",
+    "main": "index.html",
+    "name": "deviousvalleyend",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Gohchi/devious-valley--end.git"
+    },
+    "scripts": {
+        "build": "webpack --config webpack.prod.js",
+        "start": "webpack --config webpack.dev.js",
+        "exec": "nwbuild -r ./",
+        "export": "node export-nw"
+    },
+    "version": "0.1.0-alpha",
+    "webexe_settings": {
+        "blacklist": "",
+        "custom_script": "",
+        "download_dir": "",
+        "export_dir": "E:/Code/Tools/Web2Exe/export",
+        "force_download": false,
+        "nw_compression_level": 0,
+        "nw_version": "0.45.4",
+        "output_pattern": "",
+        "sdk_build": false,
+        "uncompressed_folder": false,
+        "whitelist": "",
+        "windows-x32": false,
+        "windows-x64": true
+    },
+    "webkit": {},
+    "window": {
+        "id": "devious-valley--end",
+        "title": "devious-valley--end"
+    }
 }
