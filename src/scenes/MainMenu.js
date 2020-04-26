@@ -256,7 +256,7 @@ export default class extends Phaser.Scene {
         this.selectContinue( () => mainMenu.show(true) );
       } )
       .add('Options', () => { mainMenu.hide(); optionsMenu.show(true) })
-      .add('Quit', () => this.game.destroy(true))
+      .add('Quit', () => { this.game.destroy(true); window.close() })
     //#endregion
 
     // this.copyrightText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 1.1, 'Devious Valley™ --end / ©2020 , Inc.', {
@@ -273,7 +273,6 @@ export default class extends Phaser.Scene {
         start: MASK_MAX_SCALE,
         to: MASK_MIN_SCALE,
     };
-    
     this.input.keyboard.on('keydown', e => { 
       e.stopPropagation();
       this.input.keyboard.removeListener('keydown');
@@ -295,9 +294,17 @@ export default class extends Phaser.Scene {
         }, [])
       ;
     });
+
+    this.textJoypadInfo = this.add.text(10, 30, '', { font: '16px Courier', fill: '#ffffff' });
+    this.joypadAdded = false;
   }
   
   update() {
+    this.checkJoypad()
+    //#region joypad
+    this.joypadTest();
+    //#endregion
+
     //#region background
     let graphics = this.bggraphics, ellipses = this.bgellipses;
     graphics.clear();
@@ -433,5 +440,87 @@ export default class extends Phaser.Scene {
       });
       saveTextList.push(texts);
     }
+  }
+
+  checkJoypad(){
+    
+    if (this.joypadAdded || this.input.gamepad.total === 0)
+    {
+      return;
+    }
+    this.input.gamepad.pad1.on('down', (pad, button, value) => {
+      console.log(pad, button, value);
+    });
+    console.log('joypad added');
+    this.joypadAdded = true;
+  }
+  joypadTest(){
+
+    if (this.input.gamepad.total === 0)
+    {
+      return;
+    }
+
+    var debug = [];
+    var pads = this.input.gamepad.gamepads;
+    // var pads = this.input.gamepad.getAll();
+    // var pads = navigator.getGamepads();
+
+    for (var i = 0; i < pads.length; i++)
+    {
+        var pad = pads[i];
+
+        if (!pad)
+        {
+            continue;
+        }
+
+        //  Timestamp, index. ID
+        debug.push(pad.id);
+        debug.push('Index: ' + pad.index + ' Timestamp: ' + pad.timestamp);
+
+        //  Buttons
+
+        var buttons = '';
+
+        for (var b = 0; b < pad.buttons.length; b++)
+        {
+            var button = pad.buttons[b];
+
+            buttons = buttons.concat('B' + button.index + ': ' + button.value + '  ');
+            // buttons = buttons.concat('B' + b + ': ' + button.value + '  ');
+
+            if (b === 8)
+            {
+                debug.push(buttons);
+                buttons = '';
+            }
+        }
+        
+        debug.push(buttons);
+
+        //  Axis
+
+        var axes = '';
+
+        for (var a = 0; a < pad.axes.length; a++)
+        {
+            var axis = pad.axes[a];
+
+            axes = axes.concat('A' + axis.index + ': ' + axis.getValue() + '  ');
+            // axes = axes.concat('A' + a + ': ' + axis + '  ');
+
+            if (a === 1)
+            {
+                debug.push(axes);
+                axes = '';
+            }
+        }
+        
+        debug.push(axes);
+        debug.push('');
+    }
+    
+    this.textJoypadInfo.setText(debug);
   }
 }
