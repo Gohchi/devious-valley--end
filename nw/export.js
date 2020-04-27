@@ -1,11 +1,17 @@
 let NwBuilder = require('nw-builder');
 let nw = new NwBuilder({
-    files: './**/**', // use the glob format
-    platforms: ['win64'],
-    version: '0.45.4',
-    buildType: 'versioned',
-    cacheDir: 'nw/cache',
-    buildDir: 'nw/build'
+  files: [
+    './nw/package.json', 
+    'dist/**/**'
+  ],
+  platforms: ['win64'],
+	main: "dist/index.html",
+  version: '0.45.4',
+  appName: "Devious Valley --end",
+  buildType: 'versioned',
+  cacheDir: 'nw/cache',
+  buildDir: 'nw/build',
+  winIco: 'assets/favicon.ico'
 });
 
 // Log stuff you want

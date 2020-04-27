@@ -4,6 +4,35 @@
     "bugs": {
         "url": "https://github.com/Gohchi/devious-valley--end/issues"
     },
+    "build": {
+        "appId": "io.github.Gohchi.devious-valley--end",
+        "nwVersion": "0.45.4",
+        "output": "nw/dist",
+        "packed": true,
+        "strippedProperties": [
+            "build"
+        ],
+        "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
+        "win": {
+            "productName": "Devious Valley--end",
+            "companyName": "FromPrototype",
+            "copyright": "copyright",
+            "icon": "./assets/favicon.ico"
+        },
+        "mac": {
+            "displayName": "Devious Valley--end",
+            "copyright": "copyright",
+            "icon": "./assets/favicon.icns",
+            "plistStrings": {
+                "CFBundleIdentifier": "io.github.Gohchi.devious-valley--end",
+                "CFBundleDocumentTypes": []
+            }
+        },
+        "nsis": {
+            "installDirectory": "$PROGRAMFILES\\${_COMPANYNAME}\\${_APPNAME}",
+            "diffUpdaters": true
+        }
+    },
     "dependencies": {
         "phaser": "^3.21.0",
         "webfontloader": "^1.6.28"
@@ -28,6 +57,7 @@
         "file-loader": "^6.0.0",
         "html-webpack-plugin": "^4.2.0",
         "nw-builder": "^3.5.7",
+        "nwjs-builder-phoenix": "^1.15.0",
         "raw-loader": "^4.0.1",
         "terser-webpack-plugin": "^2.3.5",
         "webpack": "^4.42.1",
@@ -54,11 +84,15 @@
         "url": "git+https://github.com/Gohchi/devious-valley--end.git"
     },
     "scripts": {
-        "build": "webpack --config webpack.prod.js",
         "start": "webpack --config webpack.dev.js",
-        "exec": "nwbuild -r ./",
+        "build": "webpack --config webpack.prod.js",
         "export": "node nw/export",
-        "nw": "node nw/run"
+        "build-nw": "npm run build && npm run export",
+        "exec": "nwbuild -r ./",
+        "nw": "node nw/run",
+        "phoenix-dist": "build --tasks win-x64 --mirror https://dl.nwjs.io/ .",
+        "phoenix-dist-all": "build --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ .",
+        "phoenix-start": "run --x86 --mirror https://dl.nwjs.io/ ."
     },
     "version": "0.1.0-alpha",
     "webexe_settings": {
