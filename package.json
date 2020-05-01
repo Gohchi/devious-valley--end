@@ -95,21 +95,6 @@
         "phoenix-start": "run --x86 --mirror https://dl.nwjs.io/ ."
     },
     "version": "0.1.0-alpha",
-    "webexe_settings": {
-        "blacklist": "",
-        "custom_script": "",
-        "download_dir": "",
-        "export_dir": "E:/Code/Tools/Web2Exe/export",
-        "force_download": false,
-        "nw_compression_level": 0,
-        "nw_version": "0.45.4",
-        "output_pattern": "",
-        "sdk_build": false,
-        "uncompressed_folder": false,
-        "whitelist": "",
-        "windows-x32": false,
-        "windows-x64": true
-    },
     "webkit": {},
     "window": {
         "id": "devious-valley--end",
