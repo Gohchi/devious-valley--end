@@ -25,6 +25,10 @@ export default class extends Phaser.Scene {
       this.bgellipses.push(ellipse);
     }
     this.pointSelected = 0;
+
+    setTimeout( ()=>{
+      this.scene.start('Game2Scene')
+    }, 2000)
   }
   
   update() {

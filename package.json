@@ -34,7 +34,7 @@
         }
     },
     "dependencies": {
-        "phaser": "^3.21.0",
+        "phaser": "^3.23.0",
         "webfontloader": "^1.6.28"
     },
     "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",

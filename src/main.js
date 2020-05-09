@@ -5,23 +5,41 @@ import BootScene from './scenes/Boot'
 // import GameOverScene from './scenes/GameOver'
 import MainMenu from './scenes/MainMenu'
 import LoadGameScene from './scenes/Load-Game'
-// import GameScene from './scenes/Game'
+import GameScene from './scenes/Game'
+import Game2Scene from './scenes/Game2'
 
 import config from './config'
 
+const arcade = {
+  default: 'arcade',
+  arcade: {
+    gravity: { y: 300 },
+    debug: true 
+  },
+  pixelArt: false
+};
+
+const matter = {
+  default: 'matter',
+  matter: {
+      // debug: true
+  }
+};
+
 const gameConfig = Object.assign(config, {
-  scene: [MainMenu, BootScene, LoadGameScene], //GameScene, SplashScene, GameOverScene 
+  scene: [
+    MainMenu,
+    Game2Scene,
+    GameScene,
+    BootScene,
+    LoadGameScene
+  ], //SplashScene, GameOverScene 
   pixelArt: false,
   input: {
       gamepad: true
   },
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: { x: 0, y: 0 }
-    },
-    pixelArt: false
-  }
+  // physics: arcade
+  physics: matter
 })
 
 class Game extends Phaser.Game {
