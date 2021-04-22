@@ -16,13 +16,20 @@ export default class extends Phaser.Scene {
     this.load.json('shapes', 'assets/physics/fruit-shapes.json');
     this.load.image('blocks01-flooring', 'assets/material/blocks01-flooring.png');
 
+    this.load.image('tileset01', 'assets/tilesets/tileset01.png');
+    this.load.tilemapTiledJSON('map', 'assets/tilesets/map01.json');
+
     Background.prepare( this );
     Player.prepare( this );
   }
 
   create ()
   {
-    this.bg = new Background( this );
+    const map = this.make.tilemap({ key: 'map' });
+    const tileset = map.addTilesetImage('Tileset', 'tileset01', 64, 64, 0, 0);
+    const layer = map.createLayer('TileLayer01', tileset, 0, 0);
+
+    // this.bg = new Background( this );
 
     this.createGround();
     
@@ -73,12 +80,12 @@ export default class extends Phaser.Scene {
   }
 
   update(){
-    this.bg.update();
+    // this.bg.update();
 
     //#region ground movement
     let fix = 450;
-    let v = Math.floor( this.bg.tweens.getValue() * fix );
-    this.ground2.y = v - fix*0.7 ;
+    // let v = Math.floor( this.bg.tweens.getValue() * fix );
+    // this.ground2.y = v - fix*0.7 ;
     //#endregion
 
     if(this.sys.game.config.physics.matter.debug) this.debugInfo.update();

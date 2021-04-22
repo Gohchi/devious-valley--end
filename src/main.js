@@ -28,8 +28,8 @@ const matter = {
 
 const gameConfig = Object.assign(config, {
   scene: [
-    MainMenu,
     Game2Scene,
+    MainMenu,
     GameScene,
     BootScene,
     LoadGameScene
