@@ -8,7 +8,7 @@ export default class Player {
     this.createPlayerAnimations( scene );
     this.cursors = scene.input.keyboard.createCursorKeys();
     this.group = scene.matter.world.nextGroup();
-    this.sprite = scene.add.sprite(800, 400, 'dude', 4);
+    this.sprite = scene.add.sprite(1200, 400, 'dude', 4);
     this.shapes = scene.cache.json.get('dude-shapes');
     this.gameObject = scene.matter.add
       .gameObject(this.sprite, { shape: this.shapes.dude4, restitution: .9 })

@@ -1,0 +1,28 @@
+{
+	"moon": {
+		"type": "fromPhysicsEditor",
+		"label": "moon",
+		"isStatic": false,
+		"density": 0.1,
+		"restitution": 0.1,
+		"friction": 0.10000000149011612,
+		"frictionAir": 0.009999999776482582,
+		"frictionStatic": 0.5,
+		"collisionFilter": {
+			"group": 0,
+			"category": 1,
+			"mask": 255
+		},
+		"fixtures": [
+			{
+				"label": "moon-fixture",
+				"isSensor": false,
+				"circle": {
+					"x": 64.46043165467627,
+					"y": 67.0388489208633,
+					"radius": 28
+				}
+			}
+		]
+	}
+}

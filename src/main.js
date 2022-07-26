@@ -22,7 +22,11 @@ const arcade = {
 const matter = {
   default: 'matter',
   matter: {
-      // debug: true
+    debug: true,
+    gravity: {
+      x: 0,
+      y: 0
+    }
   }
 };
 
@@ -36,7 +40,7 @@ const gameConfig = Object.assign(config, {
   ], //SplashScene, GameOverScene 
   pixelArt: false,
   input: {
-      gamepad: true
+    gamepad: true
   },
   // physics: arcade
   physics: matter
