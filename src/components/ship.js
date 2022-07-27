@@ -11,7 +11,9 @@ export default class Ship {
       force_acc: 0.01,
       lock: false
     };
-    this.events = {};
+    this.events = {
+      tween: null
+    };
   }
   static prepare( scene ){
     scene.load.atlas('space', 'assets/tests/space/space.png', 'assets/tests/space/space.json');
@@ -22,19 +24,102 @@ export default class Ship {
       space: scene.input.keyboard.addKey('space')
     };
 
-    const particles = this.createParticles( scene, image );
+    // CAMERA
+    {
+      const camera = scene.cameras.main;
+      this.keys.space.on('down', e => {
+        camera.zoomTo(2, 4000, 'Power2', true);
+        camera.shake(1000000, 0.0006, true); // infinite shake
+      });
+      this.keys.space.on('up', e => {
+        camera.shake(1, 0, true);
+        camera.zoomTo(1, 2000, 'Power2', true);
+      });
+    }
+    
 
-    let shapes = scene.cache.json.get('space-shapes');
-    const image = scene.matter.add.image(400, 300, 'space', 'moon6', { shape: shapes['moon'] });
-    //     this.matter.add.image(pointer.x, pointer.y, 'sheet', fruit, { shape: shapes[fruit] });
+    // const particles = [{x: -15, y:-24 }].map( o => Object.assign( o, { p: this.createParticles( scene )}) );
+    const particles = this.createParticles( scene );
+
+    // let shapes = scene.cache.json.get('space-shapes');
+    const image = scene.matter.add.image(400, 300, 'space', 'moon6');
+    // const image = scene.matter.add.image(400, 300, 'space', 'moon6', { shape: shapes['moon'] });
     this.image = image;
+    {
+      var Bodies = Phaser.Physics.Matter.Matter.Bodies;
+      
+      const image_body = Bodies.circle( 0, 0, 28 ),
+      // // const scale = 1.5;
+      // // image.setScale(scale, scale);
 
-    image.setFixedRotation();
+      LT = Bodies.circle( 24, -15, 6 ),
+      LM = Bodies.circle( 0, -28, 6 ),
+      LB = Bodies.circle( -24, -15, 6 ),
+      RT = Bodies.circle( 24, 15, 6 ),
+      RM = Bodies.circle( 0, 28, 6 ),
+      RB = Bodies.circle(-24, 15, 6);
+
+      const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
+        parts: [ image_body, LT, LM, LB, RT, RM, RB ]
+      });
+
+      image.setExistingBody( compoundBody );
+
+      particles.startFollow( image );
+
+      const circle_ref = scene.matter.add.circle(100, 100, 10);
+      circle_ref.mass = 1;
+      image.setMass(30);
+      image.body.gravityScale.y = 0.01;
+      // image.setIgnoreGravity(true);
+      // scene.matter.add.joint(circle_ref, image, 150, 0.001)
+      // scene.matter.add.joint(image, LT, 150, 0.001)
+
+      // // particles.forEach( o => {
+      // //   o.p.startFollow( image, o.x, o.y );
+      // // })
+    }
+    // image.setFixedRotation();
     image.setAngle(270);
     image.setFrictionAir(0.05);
-    image.setMass(30);
+    // image.setMass(30);
 
-    particles.startFollow( image );
+    {
+      // scene.input.keyboard.on('keydown', _ => {
+      //   const { tweenTimeout } = this.events;
+      //   if( tweenTimeout ) {
+      //     // console.log('keydown clear!');
+      //     clearTimeout(tweenTimeout);
+      //   }
+      // });
+      scene.input.keyboard.on('keyup', _ => {
+        const { tween, tweenTimeout } = this.events;
+        // if( tween ){
+        //   tween.pause();
+        // }
+        if( tweenTimeout ) {
+          // console.log('keyup clear!');
+          // clearTimeout(tweenTimeout);
+          return;
+        }
+        this.events.tweenTimeout = setTimeout(_ => {
+          // console.log('keyup!');
+          // console.log(image.angle);
+          this.events.tween = scene.tweens.addCounter({
+            from: image.angle,
+            to: -90,
+            duration: image.angle > 50 ? 5000 : 2000,
+            // repeat: -1,
+            ease: 'Expo.easeInOut',
+            // delay: 1000,
+            onUpdate: (tw) => {
+              image.setAngle(tw.getValue());
+            }
+          });
+          this.events.tweenTimeout = null;
+        }, 1000);
+      });
+    }
 
     const { lerp } = this.values;
     scene.cameras.main.startFollow( image, false, lerp, lerp );
@@ -99,19 +184,34 @@ export default class Ship {
     force = force || this.getValue('force');
     const { left, up, right, down } = this.cursors;
 
+    const thrustTo = direction => {
+      let obj;
+      switch (direction) {
+        case 'left': obj = { x: -force, y: 0 }; break;
+        case 'right': obj = { x: force, y: 0 }; break;
+        case 'up': obj = { x: 0, y: -force }; break;
+        case 'down': obj = { x: 0, y: force }; break;
+      }
+      image.applyForceFrom(
+        { x: image.x, y: image.y },
+        obj,
+			);
+    };
+
     if ( left.isDown )
-      image.thrustLeft( force );
+      thrustTo('left'); // image.thrustLeft( force );
     else if ( right.isDown )
-      image.thrustRight( force );
+      thrustTo('right'); // image.thrustRight( force );
     
     if ( up.isDown )
-      image.thrust( force );
+      thrustTo('up'); // image.thrust( force );
     else if ( down.isDown )
-      image.thrustBack( force );
+      thrustTo('down'); // image.thrustBack( force );
 
     return left.isDown || up.isDown || right.isDown || down.isDown;
   }
-  createParticles( scene, image ) {
+
+  createParticles( scene ) {
     const getSpeed = () => {
       return this.image ? this.image.body.speed : 0;
     }
@@ -137,7 +237,7 @@ export default class Ship {
               return Phaser.Math.Percent(getSpeed(), 0, 300) * 1000;
           }
       },
-      scale: { start: 1.0, end: 0 },
+      scale: { start: 0.6, end: 0 },
       blendMode: 'ADD'
     });
 
