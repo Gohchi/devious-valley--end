@@ -1,7 +1,12 @@
 *.log
+
 .vscode/
-dist/
+.cache/
+
 node_modules/
+dist/
+build/
+
 notes/
 nw/build/
 nw/cache/

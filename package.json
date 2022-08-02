@@ -1,103 +1,103 @@
 {
-    "app_name": "devious-valley--end",
-    "author": "Martín Farias <martin.akg1991@gmail.com>",
-    "bugs": {
-        "url": "https://github.com/Gohchi/devious-valley--end/issues"
-    },
-    "build": {
-        "appId": "io.github.Gohchi.devious-valley--end",
-        "nwVersion": "0.45.4",
-        "output": "nw/dist",
-        "packed": true,
-        "strippedProperties": [
-            "build"
-        ],
-        "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
-        "win": {
-            "productName": "Devious Valley--end",
-            "companyName": "FromPrototype",
-            "copyright": "copyright",
-            "icon": "./assets/favicon.ico"
-        },
-        "mac": {
-            "displayName": "Devious Valley--end",
-            "copyright": "copyright",
-            "icon": "./assets/favicon.icns",
-            "plistStrings": {
-                "CFBundleIdentifier": "io.github.Gohchi.devious-valley--end",
-                "CFBundleDocumentTypes": []
-            }
-        },
-        "nsis": {
-            "installDirectory": "$PROGRAMFILES\\${_COMPANYNAME}\\${_APPNAME}",
-            "diffUpdaters": true
-        }
-    },
-    "dependencies": {
-        "phaser": "^3.54.0",
-        "webfontloader": "^1.6.28"
-    },
-    "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
-    "devDependencies": {
-        "@babel/core": "^7.7.5",
-        "@babel/preset-env": "^7.7.6",
-        "babel-eslint": "^10.0.3",
-        "babel-loader": "^8.0.6",
-        "browser-sync": "^2.26.14",
-        "browser-sync-webpack-plugin": "^2.2.2",
-        "clean-webpack-plugin": "^3.0.0",
-        "copy-webpack-plugin": "^5.1.1",
-        "eslint": "^5.5.0",
-        "eslint-config-standard": "^12.0.0",
-        "eslint-plugin-import": "^2.18.2",
-        "eslint-plugin-node": "^8.0.1",
-        "eslint-plugin-promise": "^4.2.1",
-        "eslint-plugin-standard": "^4.0.1",
-        "expose-loader": "^0.7.3",
-        "file-loader": "^6.0.0",
-        "html-webpack-plugin": "^4.2.0",
-        "nw-builder": "^3.5.7",
-        "nwjs-builder-phoenix": "^1.15.0",
-        "raw-loader": "^4.0.1",
-        "terser-webpack-plugin": "^2.3.5",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11",
-        "webpack-dev-server": "^3.11.2",
-        "webpack-merge": "^4.2.2"
-    },
-    "directories": {
-        "lib": "lib"
-    },
-    "homepage": "https://github.com/Gohchi/devious-valley--end#readme",
-    "keywords": [
-        "game",
-        "deviousvalley",
-        "indie",
-        "rpg",
-        "fantasy"
+  "app_name": "devious-valley--end",
+  "author": "Martín Farias <martin.akg1991@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/Gohchi/devious-valley--end/issues"
+  },
+  "build": {
+    "appId": "io.github.Gohchi.devious-valley--end",
+    "packed": true,
+    "strippedProperties": [
+      "build"
     ],
-    "license": "ISC",
-    "main": "index.html",
-    "name": "deviousvalleyend",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Gohchi/devious-valley--end.git"
+    "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
+    "win": {
+      "productName": "Devious Valley--end",
+      "companyName": "FromPrototype",
+      "copyright": "copyright",
+      "icon": "./assets/favicon.ico"
     },
-    "scripts": {
-        "start": "webpack --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js",
-        "export": "node nw/export",
-        "build-nw": "npm run build && npm run export",
-        "exec": "nwbuild -r ./",
-        "nw": "node nw/run",
-        "phoenix-dist": "build --tasks win-x64 --mirror https://dl.nwjs.io/ .",
-        "phoenix-dist-all": "build --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ .",
-        "phoenix-start": "run --x86 --mirror https://dl.nwjs.io/ ."
+    "mac": {
+      "displayName": "Devious Valley--end",
+      "copyright": "copyright",
+      "icon": "./assets/favicon.icns",
+      "plistStrings": {
+        "CFBundleIdentifier": "io.github.Gohchi.devious-valley--end",
+        "CFBundleDocumentTypes": []
+      }
     },
-    "version": "0.1.0-alpha",
-    "webkit": {},
-    "window": {
-        "id": "devious-valley--end",
-        "title": "devious-valley--end"
+    "nsis": {
+      "installDirectory": "$PROGRAMFILES\\${_COMPANYNAME}\\${_APPNAME}",
+      "diffUpdaters": true
     }
+  },
+  "dependencies": {
+    "phaser": "^3.54.0",
+    "webfontloader": "^1.6.28"
+  },
+  "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
+  "devDependencies": {
+    "@babel/core": "^7.18.9",
+    "browser-sync": "^2.26.14",
+    "browser-sync-webpack-plugin": "^2.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "cross-env": "^7.0.3",
+    "download-cli": "^1.1.1",
+    "electron": "^9.4.0",
+    "electron-builder": "^22.10.5",
+    "electron-reload": "^1.5.0",
+    "expose-loader": "^0.7.3",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.2.0",
+    "node-sass": "^4.14.1",
+    "npm-run-all": "^4.1.5",
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-static-files-copy": "^2.6.0",
+    "raw-loader": "^4.0.1",
+    "rimraf": "^3.0.2",
+    "terser-webpack-plugin": "^2.3.5",
+    "tslint": "^6.1.3",
+    "typescript": "^4.2.4",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-merge": "^4.2.2"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "homepage": "https://github.com/Gohchi/devious-valley--end#readme",
+  "keywords": [
+    "game",
+    "deviousvalley",
+    "indie",
+    "rpg",
+    "fantasy"
+  ],
+  "license": "ISC",
+  "main": "index.html",
+  "name": "deviousvalleyend",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gohchi/devious-valley--end.git"
+  },
+  "scripts": {
+    "start": "webpack --config webpack.dev.js",
+    "postinstall": "electron-builder install-app-deps",
+    "superclean": "rimraf .cache node_modules build dist",
+    "clean": "rimraf build dist",
+    "download-phaser-typedef": "download --out typings https://raw.githubusercontent.com/photonstorm/phaser3-docs/master/typescript/phaser.d.ts",
+    "build": "rimraf build && parcel build src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
+    "watch": "rimraf build && parcel watch src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
+    "app": "cross-env ELECTRON_DEBUG=true electron build/main.js",
+    "debug": "cross-env ELECTRON_DEBUG=vscode electron --remote-debugging-port=9223 build/main.js",
+    "dist": "npm build && electron-builder"
+  },
+  "version": "0.1.0-alpha",
+  "webkit": {},
+  "window": {
+    "id": "devious-valley--end",
+    "title": "devious-valley--end"
+  }
 }
