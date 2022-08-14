@@ -42,7 +42,7 @@ export default class Ship {
     const particles = this.createParticles( scene );
 
     // let shapes = scene.cache.json.get('space-shapes');
-    const image = scene.matter.add.image(400, 300, 'space', 'moon6');
+    const image = scene.matter.add.image(1600, 300, 'space', 'moon6');
     // const image = scene.matter.add.image(400, 300, 'space', 'moon6', { shape: shapes['moon'] });
     this.image = image;
     {

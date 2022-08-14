@@ -3,7 +3,7 @@ const path = require("path");
 
 module.exports = {
   entry: {
-    app: [path.resolve(__dirname, 'src/main.js')],
+    app: [path.resolve(__dirname, 'src/game.ts')],
     vendor: ['phaser']
   },
   output: {
@@ -15,12 +15,23 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         use: ['babel-loader'],
         include: path.join(__dirname, 'src')
-      }
+      },
+      // {
+      //   test: /\.ts$/,
+      //   exclude: /node_module/,
+      //   use: 'ts-loader'
+      // }
     ]
   },
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  },
+  // target: 'node',
   optimization: {
     splitChunks: {
       name: 'vendor',
