@@ -1,43 +1,28 @@
-const path = require('path')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
+import type { Configuration } from "webpack";
+
+const path = require('path');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 
 // Phaser webpack config
-const phaserModule = path.join(__dirname, '/node_modules/phaser/')
-const phaser = path.join(phaserModule, 'src/phaser.js')
+const phaserModule = path.join(__dirname, '/node_modules/phaser/');
+const phaser = path.join(phaserModule, 'src/phaser.js');
 
 const definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
   WEBGL_RENDERER: true, 
   CANVAS_RENDERER: true 
-})
+});
 
-module.exports = {
+const devServer: DevServerConfiguration = {};
+
+const config: Configuration = {
   mode: 'development',
-  // serve: {
-  //   devMiddleware: {
-  //       publicPath: '/dist/',
-  //   },
-  // },
-  devServer: {
-		port: process.env.PORT || 8080,
-    // setupMiddlewares: (middlewares, devServer) => {
-    //   devServer.app.use('/assets/', express.static(path.resolve(__dirname, 'src/assets')));
-    //   return middlewares;
-    // }
-    // static: { 
-    //   directory: path.resolve(__dirname, 'src/assets'), 
-    //   publicPath: '/assets'
-    // }
-    // static: [
-    //   {
-    //     directory: path.join(__dirname, 'src/assets'),
-    //   }
-    // ]
-    // static: [path.resolve(__dirname, 'src')]
-  },
+  devServer,
+
   entry: {
     app: [
       path.resolve(__dirname, 'src/game.ts')
@@ -71,14 +56,14 @@ module.exports = {
       },
       hash: false
     }),
-    new BrowserSyncPlugin({
-      host: process.env.IP || 'localhost',
-      port: process.env.PORT || 3000,
-      server: {
-        // baseDir: ['./', './build']
-        baseDir: ['./dist']
-      }
-    }),
+    // new BrowserSyncPlugin({
+    //   host: process.env.IP || 'localhost',
+    //   port: process.env.PORT || 3000,
+    //   server: {
+    //     // baseDir: ['./', './build']
+    //     baseDir: ['./dist']
+    //   }
+    // }),
     new CopyPlugin({
       patterns: [
         { from: "src/assets", to: "assets" }
@@ -117,4 +102,6 @@ module.exports = {
       'phaser': phaser,
     }
   }
-}
+ };
+
+export default config;
