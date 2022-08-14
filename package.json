@@ -1,41 +1,27 @@
 {
-  "app_name": "devious-valley--end",
+  "name": "deviousvalleyend",
+  "version": "0.1.0-alpha",
+  "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
+  "main": "index.html",
   "author": "Martín Farias <martin.akg1991@gmail.com>",
-  "bugs": {
-    "url": "https://github.com/Gohchi/devious-valley--end/issues"
-  },
-  "build": {
-    "appId": "io.github.Gohchi.devious-valley--end",
-    "packed": true,
-    "strippedProperties": [
-      "build"
-    ],
-    "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
-    "win": {
-      "productName": "Devious Valley--end",
-      "companyName": "FromPrototype",
-      "copyright": "copyright",
-      "icon": "./assets/favicon.ico"
-    },
-    "mac": {
-      "displayName": "Devious Valley--end",
-      "copyright": "copyright",
-      "icon": "./assets/favicon.icns",
-      "plistStrings": {
-        "CFBundleIdentifier": "io.github.Gohchi.devious-valley--end",
-        "CFBundleDocumentTypes": []
-      }
-    },
-    "nsis": {
-      "installDirectory": "$PROGRAMFILES\\${_COMPANYNAME}\\${_APPNAME}",
-      "diffUpdaters": true
-    }
+  "scripts": {
+    "serve": "webpack serve",
+    "start": "webpack-dev-server --mode development --open",
+    "webpack": "webpack --config webpack.dev.js",
+    "postinstall": "electron-builder install-app-deps",
+    "superclean": "rimraf .cache node_modules build dist",
+    "clean": "rimraf build dist",
+    "download-phaser-typedef": "download --out typings https://raw.githubusercontent.com/photonstorm/phaser3-docs/master/typescript/phaser.d.ts",
+    "build": "rimraf build && parcel build src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
+    "watch": "rimraf build && parcel watch src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
+    "app": "cross-env ELECTRON_DEBUG=true electron build/main.js",
+    "debug": "cross-env ELECTRON_DEBUG=vscode electron --remote-debugging-port=9223 build/main.js",
+    "dist": "npm build && electron-builder"
   },
   "dependencies": {
     "phaser": "^3.54.0",
     "webfontloader": "^1.6.28"
   },
-  "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
   "devDependencies": {
     "@babel/core": "^7.18.9",
     "@babel/preset-env": "^7.18.10",
@@ -70,10 +56,45 @@
     "webpack-dev-server": "^4.9.3",
     "webpack-merge": "^4.2.2"
   },
+  "build": {
+    "appId": "io.github.Gohchi.devious-valley--end",
+    "packed": true,
+    "strippedProperties": [
+      "build"
+    ],
+    "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
+    "win": {
+      "productName": "Devious Valley--end",
+      "companyName": "FromPrototype",
+      "copyright": "copyright",
+      "icon": "./assets/favicon.ico"
+    },
+    "mac": {
+      "displayName": "Devious Valley--end",
+      "copyright": "copyright",
+      "icon": "./assets/favicon.icns",
+      "plistStrings": {
+        "CFBundleIdentifier": "io.github.Gohchi.devious-valley--end",
+        "CFBundleDocumentTypes": []
+      }
+    },
+    "nsis": {
+      "installDirectory": "$PROGRAMFILES\\${_COMPANYNAME}\\${_APPNAME}",
+      "diffUpdaters": true
+    }
+  },
   "directories": {
     "lib": "lib"
   },
   "homepage": "https://github.com/Gohchi/devious-valley--end#readme",
+  "repository": {
+  "license": "ISC",
+  "type": "git",
+    "url": "git+https://github.com/Gohchi/devious-valley--end.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gohchi/devious-valley--end/issues"
+  },
   "keywords": [
     "game",
     "deviousvalley",
@@ -81,28 +102,7 @@
     "rpg",
     "fantasy"
   ],
-  "license": "ISC",
-  "main": "index.html",
-  "name": "deviousvalleyend",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Gohchi/devious-valley--end.git"
-  },
-  "scripts": {
-    "serve": "webpack serve",
-    "start": "webpack-dev-server --mode development --open",
-    "webpack": "webpack --config webpack.dev.js",
-    "postinstall": "electron-builder install-app-deps",
-    "superclean": "rimraf .cache node_modules build dist",
-    "clean": "rimraf build dist",
-    "download-phaser-typedef": "download --out typings https://raw.githubusercontent.com/photonstorm/phaser3-docs/master/typescript/phaser.d.ts",
-    "build": "rimraf build && parcel build src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
-    "watch": "rimraf build && parcel watch src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
-    "app": "cross-env ELECTRON_DEBUG=true electron build/main.js",
-    "debug": "cross-env ELECTRON_DEBUG=vscode electron --remote-debugging-port=9223 build/main.js",
-    "dist": "npm build && electron-builder"
-  },
-  "version": "0.1.0-alpha",
+  "app_name": "devious-valley--end",
   "webkit": {},
   "window": {
     "id": "devious-valley--end",
