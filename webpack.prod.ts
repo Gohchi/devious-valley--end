@@ -33,7 +33,7 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader"

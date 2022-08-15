@@ -1,6 +1,9 @@
 import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
 import type { Configuration } from "webpack";
 
+import common from './webpack.common';
+const merge = require('webpack-merge');
+
 import * as path from 'path';
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -19,29 +22,16 @@ const definePlugin = new webpack.DefinePlugin({
 
 const devServer: DevServerConfiguration = {};
 
-const config: Configuration = {
+const config: Configuration = merge(common, {
   mode: 'development',
   devServer,
 
-  entry: {
-    app: [
-      path.resolve(__dirname, 'src/game.ts')
-    ],
-    vendor: ['phaser']
-  },
 	devtool: 'source-map',
-  output: {
-    pathinfo: true,
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-    filename: 'bundle.js'
-  },
-  // watch: true,
   plugins: [
     definePlugin,
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './src/index.html',
+      template: './src/index.webpack.html',
       chunks: ['vendor', 'app'],
       chunksSortMode: 'manual',
       minify: {
@@ -70,38 +60,12 @@ const config: Configuration = {
       ],
     })
   ],
-  module: {
-    rules: [
-      {
-        test: /\.ts$/,
-        loaders: ['babel-loader'],
-        include: path.join(__dirname, 'src'),
-      },
-      { // https://v4.webpack.js.org/guides/asset-management/
-        test: /\.(png|svg|jpg|gif)$/,
-        use: [
-          'file-loader',
-        ],
-      }
-    ]
-  },
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  },
-  optimization: {
-    splitChunks: {
-      name: 'vendor',
-      chunks: 'all'
-    }
-  },
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
       'phaser': phaser,
     }
   }
- };
+});
 
 export default config;
