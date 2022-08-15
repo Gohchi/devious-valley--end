@@ -1,35 +1,48 @@
-import Phaser from 'phaser'
-import Player from '../components/player'
-import Background from '../components/background'
-import Ship from '../components/ship'
-import Debug from '../components/debug'
+import Phaser from 'phaser';
+// import Player from '../components/player';
+import { Background } from '../components/background';
+import { Ship } from '../components/ship';
+import Debug from '../components/debug';
 
+import fruitSpritesPng from '../assets/physics/fruit-sprites.png';
+import fruitSpritesJson from '../assets/physics/fruit-sprites.json';
+import fruitShapesJson from '../assets/physics/fruit-shapes.json';
+import blocks01FlooringPng from '../assets/material/blocks01-flooring.png';
+import tileset01Png from '../assets/tilesets/tileset01.png';
+import map01Json from '../assets/tilesets/map01.json';
 
-export default class extends Phaser.Scene {
+export class Game2Scene extends Phaser.Scene {
+  private ship: Ship;
+  // private player: Player;
+  private debugData: any;
+  private debugInfo: any;
+  // private delayCall: any;
+  private ground2: any;
+  private cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl | any;
+
   constructor () {
     super({ key: 'Game2Scene' })
     
-    this.ship = new Ship( this );
+    this.ship = new Ship();
     this.debugData = {
       force: 0
     }
-    this.controls = null;
   }
   preload ()
   {
     // //  Load sprite sheet generated with TexturePacker
-    this.load.atlas('sheet', 'assets/physics/fruit-sprites.png', 'assets/physics/fruit-sprites.json');
+    this.load.atlas('sheet', fruitSpritesPng, fruitSpritesJson);
     
     // //  Load body shapes from JSON file generated using PhysicsEditor
-    this.load.json('shapes', 'assets/physics/fruit-shapes.json');
-    this.load.image('blocks01-flooring', 'assets/material/blocks01-flooring.png');
+    this.load.json('shapes', fruitShapesJson);
+    this.load.image('blocks01-flooring', blocks01FlooringPng);
     
-    this.load.image('tileset01', 'assets/tilesets/tileset01.png');
-    this.load.tilemapTiledJSON('map', 'assets/tilesets/map01.json');
+    this.load.image('tileset01', tileset01Png);
+    this.load.tilemapTiledJSON('map', map01Json);
 
 
     Background.prepare( this );
-    Player.prepare( this );
+    // Player.prepare( this );
     Ship.prepare( this );
   }
 
@@ -73,7 +86,7 @@ export default class extends Phaser.Scene {
       this.createGround();
       
       // create player
-      this.player = new Player( this );
+      // this.player = new Player( this );
       
       // let shapes = this.cache.json.get('shapes');
 
@@ -97,7 +110,6 @@ export default class extends Phaser.Scene {
           // .add(() => "Vel X: " + Math.round(this.player.gameObject.body.velocity.x));
       }
       
-      this.delayCall;
       this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
         // console.log('collisionstarts');
         let go = bodyA.gameObject;
@@ -114,15 +126,12 @@ export default class extends Phaser.Scene {
 
           }
         }
-        clearTimeout(this.delayCall);
-        this.delayCall = setTimeout(() => {
-          // console.log('onGround');
-          this.player.playerOnGround = true;
-        }, 100);
+        // clearTimeout(this.delayCall);
+        // this.delayCall = setTimeout(() => {
+        //   // console.log('onGround');
+        //   this.player.playerOnGround = true;
+        // }, 100);
       });
-      
-      this.gravityChanged = false;
-      
     }
 
   }
@@ -147,9 +156,10 @@ export default class extends Phaser.Scene {
   }
 
   createGround(){
+    const globalWidth: number = +this.sys.game.config.width;
     const baseGround = 500;
     this.matter.add
-      .image(this.sys.game.config.width / 2, baseGround + 120, 'blocks01-flooring', null, { isStatic: true, density: .5 }) //density: .5
+      .image(globalWidth / 2, baseGround + 120, 'blocks01-flooring', null, { isStatic: true, density: .5 }) //density: .5
       .setScale(8, 1)
       // .tint = Math.random() * 0xffffff;
       // .setAngle(10)

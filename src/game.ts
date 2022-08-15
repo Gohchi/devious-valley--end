@@ -6,7 +6,7 @@ import BootScene from './scenes/Boot'
 import MainMenu from './scenes/MainMenu'
 import LoadGameScene from './scenes/Load-Game'
 import GameScene from './scenes/Game'
-import Game2Scene from './scenes/Game2'
+import { Game2Scene } from './scenes/Game2'
 
 import config from './config'
 
