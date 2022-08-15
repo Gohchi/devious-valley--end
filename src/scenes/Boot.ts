@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 // import WebFont from 'webfontloader'
 import { windowWidth, windowHeight } from '../config'
 
-export default class extends Phaser.Scene {
+export class BootScene extends Phaser.Scene {
   constructor () {
     super({ key: 'BootScene' })
   }

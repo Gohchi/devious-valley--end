@@ -1,18 +1,24 @@
 import Phaser from 'phaser'
 
-export default class extends Phaser.Scene {
-  constructor () {
-    super({ key: 'GameScene' })
+export class GameScene extends Phaser.Scene {
+  private platformSpeed: number = 150;
+  private debugInfo: Phaser.GameObjects.Text | any;
+  private debugInfo2: Phaser.GameObjects.Text | any;
+  private cursors: Phaser.Input.Keyboard.CursorKeys | any;
+  private platforms: Phaser.Physics.Arcade.StaticGroup | any;
+  private movingPlatform: Phaser.Physics.Arcade.Image | any;
+  private player: Phaser.Physics.Arcade.Sprite | any;
 
-    this.platformSpeed = 150;
+  constructor() {
+    super({ key: 'GameScene' })
   }
 
-  preload () {
+  preload() {
     this.load.image('base-button', 'assets/base-button.png');
     this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
   }
   
-  create () {
+  create() {
     this.debugInfo = this.add.text(700, 100, "");
     this.debugInfo2 = this.add.text(700, 120, "");
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -38,7 +44,7 @@ export default class extends Phaser.Scene {
 
   //#region privates
   createPlayer(){
-    let player = this.player = this.physics.add.sprite(600, 400, 'dude');
+    let player: any = this.player = this.physics.add.sprite(600, 400, 'dude');
     player.setBounce(0.1);
     player.setCollideWorldBounds(true);
 
@@ -48,7 +54,7 @@ export default class extends Phaser.Scene {
 
     // this.physics.add.overlap(player, this.platforms, this.collectStar, null, this);
   }
-  stopAngleChange( player, platforms )
+  stopAngleChange( player: Phaser.GameObjects.GameObject | any ): any
   {
     player.setAngularVelocity(0);
     player.angle = 0;
@@ -115,7 +121,7 @@ export default class extends Phaser.Scene {
     // }
     this.debugInfo.setText(player.angle);
   }
-  roundCounter(player) {
+  roundCounter( player: any ) {
     let times = 0, checked = true;
     return {
       checkRound: () => {
