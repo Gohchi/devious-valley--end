@@ -4,15 +4,10 @@ import type { Configuration } from "webpack";
 import common from './webpack.common';
 const merge = require('webpack-merge');
 
-import * as path from 'path';
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
-
-// Phaser webpack config
-const phaserModule = path.join(__dirname, '/node_modules/phaser/');
-const phaser = path.join(phaserModule, 'src/phaser.js');
 
 const definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
@@ -59,13 +54,7 @@ const config: Configuration = merge(common, {
         { from: "src/assets", to: "assets" }
       ],
     })
-  ],
-  resolve: {
-    extensions: ['.ts', '.js'],
-    alias: {
-      'phaser': phaser,
-    }
-  }
+  ]
 });
 
 export default config;

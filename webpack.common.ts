@@ -1,7 +1,12 @@
 import type { Configuration } from "webpack";
 
+import * as path from 'path';
+
 const webpack = require("webpack");
-const path = require("path");
+
+// Phaser webpack config
+const phaserModule = path.join(__dirname, '/node_modules/phaser/');
+const phaser = path.join(phaserModule, 'src/phaser.js');
 
 const config: Configuration = {
   entry: {
@@ -48,7 +53,13 @@ const config: Configuration = {
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true)
     })
-  ]
+  ],
+  resolve: {
+    extensions: ['.ts', '.js'],
+    alias: {
+      'phaser': phaser,
+    }
+  }
 };
 
 export default config;
