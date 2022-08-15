@@ -5,7 +5,7 @@
   "main": "build/main.js",
   "author": "Martín Farias <martin.akg1991@gmail.com>",
   "scripts": {
-    "serve": "webpack serve",
+    "serve": "webpack serve --config webpack.dev.ts",
     "start": "webpack-dev-server --mode development --open --config webpack.dev.ts",
     "dev": "webpack --config webpack.dev.ts",
     "build": "npm run clean && webpack --config webpack.prod.ts",

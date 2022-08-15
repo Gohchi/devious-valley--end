@@ -1,5 +1,5 @@
-import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
-import type { Configuration } from "webpack";
+import type { Configuration as DevServerConfiguration } from 'webpack-dev-server';
+import type { Configuration } from 'webpack';
 
 import common from './webpack.common';
 const merge = require('webpack-merge');
@@ -7,7 +7,7 @@ const merge = require('webpack-merge');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 // const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
-const CopyPlugin = require("copy-webpack-plugin");
+// const CopyPlugin = require('copy-webpack-plugin');
 
 const definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
@@ -49,11 +49,11 @@ const config: Configuration = merge(common, {
     //     baseDir: ['./dist']
     //   }
     // }),
-    new CopyPlugin({
-      patterns: [
-        { from: "src/assets", to: "assets" }
-      ],
-    })
+    // new CopyPlugin({
+    //   patterns: [
+    //     { from: 'src/assets', to: 'assets' },
+    //   ],
+    // })
   ]
 });
 
