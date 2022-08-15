@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+		"sourceMap": true,
+		"esModuleInterop": true,
+    "strict": true,
+		"allowSyntheticDefaultImports": true,
+    "typeRoots": [
+      "./typings",
+      "./node_modules/"
+    ],
+	},
+  "include": [
+    "src/**/*.ts",
+    "typings/**/*.d.ts"
+  ],
+	"files": [
+		"src/game.ts"
+	]
+}

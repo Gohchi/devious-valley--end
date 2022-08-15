@@ -1,7 +1,17 @@
 import Phaser from 'phaser'
 
-export default class Ship {
-  constructor( scene ){
+import spacePng from '../assets/tests/space/space.png';
+import spaceJson from '../assets/tests/space/space.json';
+import spaceShapeJson from '../assets/tests/space/space-shapes.json';
+
+export class Ship {
+  private cursors: any;
+  private image: any;
+  private values: any;
+  private events: any;
+  private keys: any;
+
+  constructor(){
     this.cursors = null;
     this.image = null;
     this.values = {
@@ -15,11 +25,11 @@ export default class Ship {
       tween: null
     };
   }
-  static prepare( scene ){
-    scene.load.atlas('space', 'assets/tests/space/space.png', 'assets/tests/space/space.json');
-    scene.load.json('space-shapes', 'assets/tests/space/space-shapes.json');
+  static prepare( scene: Phaser.Scene ){
+    scene.load.atlas('space', spacePng, spaceJson);
+    scene.load.json('space-shapes', spaceShapeJson);
   }
-  create( scene ){
+  create( scene: Phaser.Scene ){
     this.keys = {
       space: scene.input.keyboard.addKey('space')
     };
@@ -42,7 +52,7 @@ export default class Ship {
     const particles = this.createParticles( scene );
 
     // let shapes = scene.cache.json.get('space-shapes');
-    const image = scene.matter.add.image(400, 300, 'space', 'moon6');
+    const image: Phaser.Physics.Matter.Image | any = scene.matter.add.image(1600, 300, 'space', 'moon6');
     // const image = scene.matter.add.image(400, 300, 'space', 'moon6', { shape: shapes['moon'] });
     this.image = image;
     {
@@ -67,7 +77,7 @@ export default class Ship {
 
       particles.startFollow( image );
 
-      const circle_ref = scene.matter.add.circle(100, 100, 10);
+      const circle_ref: MatterJS.Body | any = scene.matter.add.circle(100, 100, 10);
       circle_ref.mass = 1;
       image.setMass(30);
       image.body.gravityScale.y = 0.01;
@@ -112,7 +122,7 @@ export default class Ship {
             // repeat: -1,
             ease: 'Expo.easeInOut',
             // delay: 1000,
-            onUpdate: (tw) => {
+            onUpdate: (tw: any) => {
               image.setAngle(tw.getValue());
             }
           });
@@ -128,7 +138,7 @@ export default class Ship {
 
     this.cursors = scene.input.keyboard.createCursorKeys();
   }
-  update( scene, time, delta ){
+  update(){ //scene, time, delta ){
     let { originalForce, lock, launch, force_acc } = this.values;
 
     if( this.cursors.space.isDown ){
@@ -179,7 +189,7 @@ export default class Ship {
     return this.values[key];
   }
   
-  addThrustByCursors( force ) {
+  addThrustByCursors( force: Number = 0 ) {
     const image = this.image;
     force = force || this.getValue('force');
     const { left, up, right, down } = this.cursors;

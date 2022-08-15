@@ -1,14 +1,19 @@
-const path = require('path')
+import type { Configuration } from 'webpack';
+
+import * as path from 'path';
+import common from './webpack.common';
 const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
+
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
  
-module.exports = merge(common, {
+const config: Configuration = merge(common, {
   mode: 'production',
-  devtool: false,
+  // devtool: false,
+	devtool: 'source-map', // remove later
+
   output: {
     pathinfo: true,
     path: path.resolve(__dirname, 'dist'),
@@ -33,39 +38,36 @@ module.exports = merge(common, {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: 'babel-loader'
         }
       },
       {
         test: [/\.vert$/, /\.frag$/],
-        use: "raw-loader"
+        use: 'raw-loader'
       },
       {
         test: /\.(gif|png|jpe?g|svg|xml)$/i,
-        use: "file-loader"
+        use: 'file-loader'
       }
     ]
   },
   plugins: [
     new CleanWebpackPlugin({
-      root: path.resolve(__dirname, "./")
+      root: path.resolve(__dirname, './')
     }),
     new HtmlWebpackPlugin({
-      template: "./index.prod.html"
+      template: 'src/index.webpack.html'
     }),
-    // new CopyPlugin([
-    //   { from: 'source', to: 'dest' },
-    //   { from: 'other', to: 'public' },
-    // ]),
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, './assets'),
-        to: path.resolve(__dirname, './dist/assets'),
-        copyUnmodified: true,
-      },
-    ])
+    new CopyPlugin({
+      patterns: [
+        // { from: 'src/assets', to: 'assets' }
+        { from: 'src/assets/favicon.ico', to: 'assets/favicon.ico' }
+      ],
+    })
   ]
 });
+
+export default config;
