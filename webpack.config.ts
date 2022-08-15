@@ -77,12 +77,12 @@ const config: Configuration = {
         loaders: ['babel-loader'],
         include: path.join(__dirname, 'src'),
       },
-      // { // https://v4.webpack.js.org/guides/asset-management/
-      //   test: /\.(png|svg|jpg|gif)$/,
-      //   use: [
-      //     'file-loader',
-      //   ],
-      // }
+      { // https://v4.webpack.js.org/guides/asset-management/
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [
+          'file-loader',
+        ],
+      }
     ]
   },
   node: {

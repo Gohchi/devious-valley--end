@@ -2,7 +2,7 @@
   "name": "deviousvalleyend",
   "version": "0.1.0-alpha",
   "description": "Devious Valley is a game about data, time travel, puzzle and ability made using Phaser 3 + ES6 + Webpack",
-  "main": "index.html",
+  "main": "build/main.js",
   "author": "Martín Farias <martin.akg1991@gmail.com>",
   "scripts": {
     "serve": "webpack serve",
@@ -16,7 +16,8 @@
     "watch": "rimraf build && parcel watch src/main.ts src/index.html --public-url ./ -d build --out-file=main --target=electron",
     "app": "cross-env ELECTRON_DEBUG=true electron build/main.js",
     "debug": "cross-env ELECTRON_DEBUG=vscode electron --remote-debugging-port=9223 build/main.js",
-    "dist": "npm build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "electron": "electron-builder"
   },
   "dependencies": {
     "phaser": "^3.54.0",
@@ -58,33 +59,12 @@
   },
   "build": {
     "appId": "io.github.Gohchi.devious-valley--end",
-    "packed": true,
-    "strippedProperties": [
-      "build"
-    ],
-    "outputPattern": "${NAME} ${VERSION} ${PLATFORM} ${ARCH}",
-    "win": {
-      "productName": "Devious Valley--end",
-      "companyName": "FromPrototype",
-      "copyright": "copyright",
-      "icon": "./assets/favicon.ico"
-    },
     "mac": {
-      "displayName": "Devious Valley--end",
-      "copyright": "copyright",
-      "icon": "./assets/favicon.icns",
-      "plistStrings": {
-        "CFBundleIdentifier": "io.github.Gohchi.devious-valley--end",
-        "CFBundleDocumentTypes": []
-      }
+      "category": "your.app.category.type"
     },
-    "nsis": {
-      "installDirectory": "$PROGRAMFILES\\${_COMPANYNAME}\\${_APPNAME}",
-      "diffUpdaters": true
-    }
-  },
-  "directories": {
-    "lib": "lib"
+    "files": [
+      "build/*"
+    ]
   },
   "homepage": "https://github.com/Gohchi/devious-valley--end#readme",
   "repository": {
