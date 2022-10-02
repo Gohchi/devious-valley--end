@@ -29,7 +29,7 @@ const config: Configuration = {
         include: path.join(__dirname, 'src'),
       },
       { // https://v4.webpack.js.org/guides/asset-management/
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|jpe?g|gif|svg|xml)$/i,
         use: [
           'file-loader',
         ],
