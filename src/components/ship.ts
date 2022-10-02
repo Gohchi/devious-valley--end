@@ -4,12 +4,16 @@ import spacePng from '../assets/tests/space/space.png';
 import spaceJson from '../assets/tests/space/space.json';
 import spaceShapeJson from '../assets/tests/space/space-shapes.json';
 
+import impulseLoadMp3 from '../assets/audio/impulse-load.mp3';
+import impulseReleaseMp3 from '../assets/audio/impulse-release.mp3';
+
 export class Ship {
   private cursors: any;
   private image: any;
   private values: any;
   private events: any;
   private keys: any;
+  private sounds: any = {};
 
   constructor(){
     this.cursors = null;
@@ -25,10 +29,15 @@ export class Ship {
       tween: null
     };
   }
+
   static prepare( scene: Phaser.Scene ){
     scene.load.atlas('space', spacePng, spaceJson);
     scene.load.json('space-shapes', spaceShapeJson);
+
+    scene.load.audio('impulse-load', impulseLoadMp3, { instances: 1 });
+    scene.load.audio('impulse-release', impulseReleaseMp3, { instances: 1 });
   }
+
   create( scene: Phaser.Scene ){
     this.keys = {
       space: scene.input.keyboard.addKey('space')
@@ -47,6 +56,11 @@ export class Ship {
       });
     }
     
+    // SOUNDS
+    {
+      this.sounds['impulse-load'] = scene.sound.add('impulse-load', {volume: 0.5}) as Phaser.Sound.BaseSound;
+      this.sounds['impulse-release'] = scene.sound.add('impulse-release', {volume: 0.5}) as Phaser.Sound.BaseSound;
+    }
 
     // const particles = [{x: -15, y:-24 }].map( o => Object.assign( o, { p: this.createParticles( scene )}) );
     const particles = this.createParticles( scene );
@@ -139,11 +153,17 @@ export class Ship {
 
     this.cursors = scene.input.keyboard.createCursorKeys();
   }
+
   update(){ //scene, time, delta ){
     let { originalForce, lock, launch, force_acc } = this.values;
 
     if( this.cursors.space.isDown ){
       const step_force = 0.06, max_force = 2;
+      
+      
+      if(!this.sounds['impulse-load'].isPlaying){
+        this.sounds['impulse-load'].play();
+      }
 
       if( force_acc <= max_force )
         this.setValue( 'force_acc', force_acc + step_force <= max_force ? force_acc + step_force : 2 );
@@ -151,6 +171,8 @@ export class Ship {
       if( !this.events.launchEvent ){
         this.setValue( 'force', originalForce * 0.2 );
         this.events.launchEvent = this.keys.space.once('up', e => {
+          this.sounds['impulse-load'].stop();
+
           console.log( 'space up!' );
           // if force_acc is pressed for a while, it launchs
           const fa = this.getValue( 'force_acc' );
@@ -163,6 +185,8 @@ export class Ship {
             this.setValue( 'force', originalForce );
             return;
           }
+
+          this.sounds['impulse-release'].play();
 
           this.setValue( 'lock', true );
           setTimeout( _ => {
