@@ -11,9 +11,12 @@ import blocks01FlooringPng from '../assets/material/blocks01-flooring.png';
 import tileset01Png from '../assets/tilesets/tileset01.png';
 import map01Json from '../assets/tilesets/map01.json';
 
+import abyss01Mp3 from '../assets/audio/songs/abyss01.mp3';
+
 export class Game2Scene extends Phaser.Scene {
   private debug: boolean | Phaser.Types.Physics.Matter.MatterDebugConfig | undefined;
   private ship: Ship;
+  private currentSong: any;
   // private player: Player;
   private debugData: any;
   private debugInfo: any;
@@ -41,6 +44,7 @@ export class Game2Scene extends Phaser.Scene {
     this.load.image('tileset01', tileset01Png);
     this.load.tilemapTiledJSON('map', map01Json);
 
+    this.load.audio('main-song', abyss01Mp3);
 
     Background.prepare( this );
     // Player.prepare( this );
@@ -75,7 +79,10 @@ export class Game2Scene extends Phaser.Scene {
       this.ship.create( this );
       this.debugData.force = 0.01;
     }
-
+    {
+      this.currentSong = this.sound.add('main-song', {volume: 1});
+      this.currentSong.play();
+    }
     // GAME
     {
         
@@ -141,7 +148,7 @@ export class Game2Scene extends Phaser.Scene {
   update(time, delta){
     this.cameraControls.update(delta);
     // test spaceship
-    this.ship.update(); // this, time, delta );
+    this.ship.update( this ); // this, time, delta );
     
     // GAME
     // this.bg.update();

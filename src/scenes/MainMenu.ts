@@ -126,20 +126,25 @@ export default class extends Phaser.Scene {
       selector: this.sound.add('menu-selector', {volume: 0.5}),
       cancel: this.sound.add('menu-cancel', {volume: 0.5})
     };
-    let optionsMenu = new SimpleMenu(this, gameWidth / 2, gameHeight / 1.8, {
+    const textStyle = {
       fontFamily: font.Title,
-      fontSize: '28px'
-    }, sounds, true).onKey('ESC', () => { optionsMenu.hide(); mainMenu.show(true); })
+      fontSize: '28px',
+      shadow: { offsetX: 3, offsetY: 3, blur: 4, color: 'rgba(0,0,0,0.5)' } as Phaser.Types.GameObjects.Text.TextShadow
+    };
+    let optionsMenu = new SimpleMenu(this, gameWidth / 2, gameHeight / 1.8, textStyle, sounds, true)
+      .onKey('ESC', () => { optionsMenu.hide(); mainMenu.show(true); })
       .add('Audio', () => console.log('Audio selected'))
       .add('Video', () => console.log('Video selected'));
       
     this.saveExists = true;
-    let mainMenu = new SimpleMenu(this, gameWidth / 2, gameHeight / 1.8, {
-      fontFamily: font.Title,
-      fontSize: '28px'
-    }, sounds, true)
+    let mainMenu = new SimpleMenu(this, gameWidth / 2, gameHeight / 1.8, textStyle, sounds, true)
       .add('New game', () => {
           mainMenu.hide();
+          this.tweens.add({
+              targets: this.song,
+              volume: 0,
+              duration: 500
+          });
           this.addAnimation(this.cameras.main, {
               alpha: {
                 ease: 'Power0',
@@ -149,7 +154,7 @@ export default class extends Phaser.Scene {
               }
             })
             .setCallback('onComplete', o => {
-              this.scene.start('LoadGameScene')
+              this.scene.start('LoadGameScene');
             }, [])
           ;
         }

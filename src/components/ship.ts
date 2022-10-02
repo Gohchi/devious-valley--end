@@ -154,7 +154,7 @@ export class Ship {
     this.cursors = scene.input.keyboard.createCursorKeys();
   }
 
-  update(){ //scene, time, delta ){
+  update( scene: Phaser.Scene | any ) { //, time, delta ){
     let { originalForce, lock, launch, force_acc } = this.values;
 
     if( this.cursors.space.isDown ){
@@ -164,6 +164,10 @@ export class Ship {
       if(!this.sounds['impulse-load'].isPlaying){
         this.sounds['impulse-load'].play();
       }
+      
+      if(scene.currentSong.isPlaying && scene.currentSong.volume === 1){
+        scene.currentSong.volume = 0.5;
+      }
 
       if( force_acc <= max_force )
         this.setValue( 'force_acc', force_acc + step_force <= max_force ? force_acc + step_force : 2 );
@@ -172,6 +176,10 @@ export class Ship {
         this.setValue( 'force', originalForce * 0.2 );
         this.events.launchEvent = this.keys.space.once('up', e => {
           this.sounds['impulse-load'].stop();
+
+          if(scene.currentSong.isPlaying){
+            scene.currentSong.volume = 1;
+          }
 
           console.log( 'space up!' );
           // if force_acc is pressed for a while, it launchs
