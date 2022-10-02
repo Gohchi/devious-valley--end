@@ -1,12 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 
-// Let electron reloads by itself
-if (process.env.ELECTRON_DEBUG === 'true' || process.env.ELECTRON_DEBUG === 'vscode') {
-  // tslint:disable-next-line:no-var-requires
-  require('electron-reload')(__dirname);
-}
-
 let mainWindow: Electron.BrowserWindow | null;
 
 function createWindow() {
