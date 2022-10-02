@@ -2,7 +2,7 @@ import type { Configuration } from 'webpack';
 
 import * as path from 'path';
 import common from './webpack.common';
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');

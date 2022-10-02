@@ -19,12 +19,19 @@ const config: Configuration = {
     publicPath: '/',
     filename: 'bundle.[name].js'
   },
+  target: 'web',
   module: {
     rules: [
       {
         test: /\.ts$/,
-        loaders: ['babel-loader'],
-        include: path.join(__dirname, 'src'),
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            include: path.join(__dirname, 'src'),
+            presets: ['@babel/preset-env']
+          }
+        }
       },
       { // https://v4.webpack.js.org/guides/asset-management/
         test: /\.(png|jpe?g|gif|svg|xml)$/i,
@@ -34,18 +41,6 @@ const config: Configuration = {
       }
     ]
   },
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  },
-  optimization: {
-    splitChunks: {
-      name: 'vendor',
-      chunks: 'all'
-    }
-  },
-  // // target: 'node',
   plugins: [
     new webpack.DefinePlugin({
       CANVAS_RENDERER: JSON.stringify(true),

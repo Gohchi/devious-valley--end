@@ -2,7 +2,7 @@ import type { Configuration as DevServerConfiguration } from 'webpack-dev-server
 import type { Configuration } from 'webpack';
 
 import common from './webpack.common';
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
