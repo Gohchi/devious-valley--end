@@ -12,6 +12,7 @@ import tileset01Png from '../assets/tilesets/tileset01.png';
 import map01Json from '../assets/tilesets/map01.json';
 
 export class Game2Scene extends Phaser.Scene {
+  private debug: boolean | Phaser.Types.Physics.Matter.MatterDebugConfig | undefined;
   private ship: Ship;
   // private player: Player;
   private debugData: any;
@@ -48,6 +49,7 @@ export class Game2Scene extends Phaser.Scene {
 
   create ()
   {
+    this.debug = !!this.sys.game.config.physics.matter && this.sys.game.config.physics.matter.debug;
     {
       this.cameras.main.zoom = 1;
       // let cursors = this.input.keyboard.createCursorKeys();
@@ -99,7 +101,7 @@ export class Game2Scene extends Phaser.Scene {
         // .setBody(shapes.banana)
       ;
       
-      if(this.sys.game.config.physics.matter.debug){
+      if(this.debug){
         this.debugInfo = new Debug( this, 500, 200 );
         this.debugInfo
           .add(() => "Force: " + this.ship.getValue( 'force' ))
@@ -139,7 +141,7 @@ export class Game2Scene extends Phaser.Scene {
   update(time, delta){
     this.cameraControls.update(delta);
     // test spaceship
-    this.ship.update( this, time, delta );
+    this.ship.update(); // this, time, delta );
     
     // GAME
     // this.bg.update();
@@ -150,7 +152,7 @@ export class Game2Scene extends Phaser.Scene {
     // this.ground2.y = v - fix*0.7 ;
     //#endregion
 
-    if(this.sys.game.config.physics.matter.debug) this.debugInfo.update();
+    if(this.debug) this.debugInfo.update();
     
     // this.player.update();
   }
@@ -159,20 +161,20 @@ export class Game2Scene extends Phaser.Scene {
     const globalWidth: number = +this.sys.game.config.width;
     const baseGround = 500;
     this.matter.add
-      .image(globalWidth / 2, baseGround + 120, 'blocks01-flooring', null, { isStatic: true, density: .5 }) //density: .5
+      .image(globalWidth / 2, baseGround + 120, 'blocks01-flooring', undefined, { isStatic: true, density: .5 }) //density: .5
       .setScale(8, 1)
       // .tint = Math.random() * 0xffffff;
       // .setAngle(10)
       .name = 'ground0'
     ;
     this.matter.add
-      .image(150, baseGround-200, 'blocks01-flooring', null, { isStatic: true })
+      .image(150, baseGround-200, 'blocks01-flooring', undefined, { isStatic: true })
       .setScale(4, 1)
       .setAngle(45)
       .name = 'ground1'
     ;
     this.ground2 = this.matter.add
-      .image(1200, baseGround, 'blocks01-flooring', null, { isStatic: true })
+      .image(1200, baseGround, 'blocks01-flooring', undefined, { isStatic: true })
       .setScale(4, 1);
     this.ground2
       .name = 'ground2';

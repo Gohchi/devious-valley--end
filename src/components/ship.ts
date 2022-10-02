@@ -56,7 +56,8 @@ export class Ship {
     // const image = scene.matter.add.image(400, 300, 'space', 'moon6', { shape: shapes['moon'] });
     this.image = image;
     {
-      var Bodies = Phaser.Physics.Matter.Matter.Bodies;
+      const matter = (Phaser.Physics.Matter as any).Matter;
+      var Bodies = matter.Bodies;
       
       const image_body = Bodies.circle( 0, 0, 28 ),
       // // const scale = 1.5;
@@ -69,7 +70,7 @@ export class Ship {
       RM = Bodies.circle( 0, 28, 6 ),
       RB = Bodies.circle(-24, 15, 6);
 
-      const compoundBody = Phaser.Physics.Matter.Matter.Body.create({
+      const compoundBody = matter.Body.create({
         parts: [ image_body, LT, LM, LB, RT, RM, RB ]
       });
 
