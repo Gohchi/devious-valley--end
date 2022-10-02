@@ -17,7 +17,15 @@ const config: Configuration = {
     pathinfo: true,
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: 'bundle.[name].js'
+    filename: 'bundle.[name].js',
+    assetModuleFilename: (pathData) => {
+      const filepath = path
+        .dirname(pathData.filename as string)
+        .split("/")
+        .slice(1)
+        .join("/");
+      return `${filepath}/[name].[hash][ext][query]`;
+    }
   },
   target: 'web',
   module: {
@@ -33,11 +41,9 @@ const config: Configuration = {
           }
         }
       },
-      { // https://v4.webpack.js.org/guides/asset-management/
-        test: /\.(png|jpe?g|gif|svg|xml)$/i,
-        use: [
-          'file-loader',
-        ],
+      {
+        test: /\.(png|jpe?g|gif|svg|xml|mp3)$/i,
+        type: 'asset/resource'
       }
     ]
   },

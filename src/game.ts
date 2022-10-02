@@ -3,8 +3,8 @@ import Phaser from 'phaser';
 import { BootScene } from './scenes/Boot';
 // import SplashScene from './scenes/Splash';
 // import GameOverScene from './scenes/GameOver';
-// import MainMenu from './scenes/MainMenu';
-// import LoadGameScene from './scenes/Load-Game';
+import MainMenu from './scenes/MainMenu';
+import LoadGameScene from './scenes/Load-Game';
 import { GameScene } from './scenes/GameScene';
 import { Game2Scene } from './scenes/Game2Scene';
 
@@ -32,11 +32,11 @@ const matter = {
 
 const gameConfig = Object.assign(config, {
   scene: [
+    MainMenu,
     Game2Scene,
-    // MainMenu,
+    LoadGameScene,
     GameScene,
     BootScene,
-    // LoadGameScene
   ], //SplashScene, GameOverScene 
   pixelArt: false,
   input: {

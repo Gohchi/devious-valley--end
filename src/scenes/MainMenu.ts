@@ -2,18 +2,35 @@ import Phaser from 'phaser'
 
 import { text, font, style } from '../lib/common'
 
+import baseButtonPng from '../assets/base-button.png';
+
+import windChimesMp3 from '../assets/audio/wind_chimes.mp3';
+import songMainMenuMp3 from '../assets/audio/songs/main-menu.mp3';
+
+import menuChangeMp3 from '../assets/audio/menu-change.mp3';
+import menuSelectorMp3 from '../assets/audio/menu-selector.mp3';
+import menuCancelMp3 from '../assets/audio/menu-cancel.mp3';
+
 class SimpleMenu {
-  constructor(scene, x, y, style, sounds = { change: null, selector: null, cancel: null }, hidden = false){
-    this.list = [];
-    this.actions = [];
-    this.selected = 0;
+  private list: Array<Phaser.GameObjects.Text> = [];
+  private actions: Array<any> = [];
+  private selected: number = 0;
+  private x;
+  private y;
+  private style;
+  private scene;
+  private hidden;
+  private events: any = {};
+  private customKeys: Array<any> = [];
+  
+  private sounds;
+
+  constructor(scene, x, y, style, sounds: { change: Phaser.Sound.BaseSound, selector: Phaser.Sound.BaseSound, cancel: Phaser.Sound.BaseSound }, hidden = false){
     this.x = x;
     this.y = y;
     this.style = style;
     this.scene = scene;
     this.hidden = hidden;
-    this.events = {};
-    this.customKeys = [];
     
     this.sounds = sounds;
   }
@@ -94,7 +111,7 @@ class SimpleMenu {
   updateView(){
     for(let i in this.list){
       let item = this.list[i];
-      item.setAlpha( i == this.selected ? 1 : 0.5 );
+      item.setAlpha( +i == this.selected ? 1 : 0.5 );
     }
   }
   enableKeys(){
@@ -126,24 +143,45 @@ class SimpleMenu {
   }
 }
 export default class extends Phaser.Scene {
+  private saves: Array<number>;
+  private song: Phaser.Sound.BaseSound;
+  private soundWindChime: Phaser.Sound.BaseSound;
+  private bggraphics: Phaser.GameObjects.Graphics;
+  private bgellipses: Array<Phaser.Geom.Ellipse>;
+  private titleText: Phaser.GameObjects.Text;
+  private versionText: Phaser.GameObjects.Text;
+  private pressAnyButtonText: Phaser.GameObjects.Text;
+  private saveExists: boolean;
+  private joypadAdded: boolean;
+
   constructor () {
     super({ key: 'MainMenuScene' })
+
+    this.saves = [1,2];
   }
 
   preload () {
-    this.load.image('base-button', 'assets/base-button.png'),
+    this.load.image('base-button', baseButtonPng),
 
-    this.load.audio('wind-chimes', 'assets/audio/wind_chimes.mp3', { instances: 1 });
-    this.load.audio('main-menu', 'assets/audio/songs/main-menu.mp3', { instances: 1 });
+    this.load.audio('wind-chimes', windChimesMp3, { instances: 1 });
+    this.load.audio('main-menu', songMainMenuMp3, { instances: 1 });
 
-    this.load.audio('menu-change', 'assets/audio/menu-change.mp3', { instances: 1 });
-    this.load.audio('menu-selector', 'assets/audio/menu-selector.mp3', { instances: 1 });
-    this.load.audio('menu-cancel', 'assets/audio/menu-cancel.mp3', { instances: 1 });
+    this.load.audio('menu-change', menuChangeMp3, { instances: 1 });
+    this.load.audio('menu-selector', menuSelectorMp3, { instances: 1 });
+    this.load.audio('menu-cancel', menuCancelMp3, { instances: 1 });
 
   }
 
+  playSound(name) {
+    // this.load.setPath("assets/");
+    this.load.once("filecomplete", () => { this.sound.add(name).play() }, this);
+    this.load.audio(name, [name + ".mp3"]);
+    this.load.start();
+  }
   create () {
-    this.saves = [1,2];
+    const gameWidth = +this.sys.game.config.width;
+    const gameHeight = +this.sys.game.config.height;
+
     //#region music
     this.song = this.sound.add('main-menu', {volume: 0.2});
     this.song.play();
@@ -157,7 +195,7 @@ export default class extends Phaser.Scene {
     // this.cameras.main.backgroundColor = Phaser.Display.Color.HexStringToColor("#dddddd");
     this.bggraphics = this.add.graphics({ lineStyle: { color: 0x00aaaa } });
 
-    let ellipse = new Phaser.Geom.Ellipse(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 0, 0);
+    let ellipse = new Phaser.Geom.Ellipse(gameWidth / 2, gameHeight / 2, 0, 0);
 
     this.bgellipses = [ellipse];
 
@@ -167,7 +205,7 @@ export default class extends Phaser.Scene {
         ellipse.width += 1.5;
         ellipse.height += 0.7;
 
-        Phaser.Geom.Ellipse.CircumferencePoint(ellipse, i / 20 * Phaser.Math.PI2, ellipse);
+        Phaser.Geom.Ellipse.CircumferencePoint(ellipse, i / 20 * Phaser.Math.PI2, ellipse as any);
 
         this.bgellipses.push(ellipse);
     }
@@ -175,7 +213,7 @@ export default class extends Phaser.Scene {
     
     //#region mask
     // const maskBaseValue = 200;
-    // const maskX = this.sys.game.config.width / 2 - maskBaseValue, maskY = this.sys.game.config.height/ 2 - maskBaseValue;
+    // const maskX = gameWidth / 2 - maskBaseValue, maskY = gameHeight/ 2 - maskBaseValue;
     // const maskShape = new Phaser.Geom.Rectangle( maskX, maskY, maskBaseValue*2, maskBaseValue*2 );
     // const maskGfx = this.make.graphics()
     //     .setDefaultStyles({
@@ -188,7 +226,7 @@ export default class extends Phaser.Scene {
     //     .fillRectShape(maskShape)
     //     .generateTexture('mask')
     // ;
-    // this.mask = this.add.image(this.sys.game.config.width / 2, this.sys.game.config.height / 2, 'mask')
+    // this.mask = this.add.image(gameWidth / 2, gameHeight / 2, 'mask')
     //     // .setPosition( 0, 0)
     //     // .setOrigin(0.5)
     // ;
@@ -198,12 +236,12 @@ export default class extends Phaser.Scene {
     //#endregion
     
     //#region title
-    this.titleText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 3, text.Title, style.Title )
+    this.titleText = this.add.text( gameWidth / 2, gameHeight / 3, text.Title, style.Title )
       .setOrigin(0.5, 0.5);
     this.versionText = this.add.text( this.titleText.x + this.titleText.width*.34, this.titleText.y - this.titleText.height*.08, text.Version, style.Version )
     //#endregion
 
-    // this.add.image( this.sys.game.config.width / 2, this.sys.game.config.height / 1.5, 'base-button')
+    // this.add.image( gameWidth / 2, gameHeight / 1.5, 'base-button')
     //   .setOrigin(0.5, 0.5)
     //   .setScale(2, 1)
     //   // .setAlpha()
@@ -213,7 +251,7 @@ export default class extends Phaser.Scene {
     //     });
 
     //#region menu
-    this.pressAnyButtonText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 1.5, 'PRESS ANY BUTTON', {
+    this.pressAnyButtonText = this.add.text( gameWidth / 2, gameHeight / 1.5, 'PRESS ANY BUTTON', {
       fontFamily: font.Title,
       fontSize: '22px'
     }).setOrigin(0.5, 0.5);
@@ -223,7 +261,7 @@ export default class extends Phaser.Scene {
       selector: this.sound.add('menu-selector', {volume: 0.5}),
       cancel: this.sound.add('menu-cancel', {volume: 0.5})
     };
-    let optionsMenu = new SimpleMenu(this, this.sys.game.config.width / 2, this.sys.game.config.height / 1.8, {
+    let optionsMenu = new SimpleMenu(this, gameWidth / 2, gameHeight / 1.8, {
       fontFamily: font.Title,
       fontSize: '28px'
     }, sounds, true).onKey('ESC', () => { optionsMenu.hide(); mainMenu.show(true); })
@@ -231,7 +269,7 @@ export default class extends Phaser.Scene {
       .add('Video', () => console.log('Video selected'));
       
     this.saveExists = true;
-    let mainMenu = new SimpleMenu(this, this.sys.game.config.width / 2, this.sys.game.config.height / 1.8, {
+    let mainMenu = new SimpleMenu(this, gameWidth / 2, gameHeight / 1.8, {
       fontFamily: font.Title,
       fontSize: '28px'
     }, sounds, true)
@@ -259,7 +297,7 @@ export default class extends Phaser.Scene {
       .add('Quit', () => { this.game.destroy(true); window.close() })
     //#endregion
 
-    // this.copyrightText = this.add.text( this.sys.game.config.width / 2, this.sys.game.config.height / 1.1, 'Devious Valley™ --end / ©2020 , Inc.', {
+    // this.copyrightText = this.add.text( gameWidth / 2, gameHeight / 1.1, 'Devious Valley™ --end / ©2020 , Inc.', {
     //   fontFamily: font.Title,
     //   fontSize: '18px'
     // }).setOrigin(0.5, 0.5);
@@ -333,8 +371,8 @@ export default class extends Phaser.Scene {
     //#region menu continue
     let selected = 0;
     const x = 0; // this.sys.game.config.width / 2;
-    const w = this.sys.game.config.width;
-    const h = this.sys.game.config.height;
+    const w = +this.sys.game.config.width;
+    const h = +this.sys.game.config.height;
  
     const config = { lineStyle: { color: 0x00aaaa }, fillStyle: { color: 0x222222, alpha: .5 } };
     const menuContinueGraphics = this.add.graphics( config );
@@ -416,7 +454,7 @@ export default class extends Phaser.Scene {
       menuContinueSaveGraphics.fillStyle(0x222222, 1)
       menuContinueSaveGraphics.fillRect( shapeSave.x + 40, shapeSave.y + 10, shapeSave.height - 20, shapeSave.height - 20 );
 
-      let texts = {};
+      let texts: any = {};
       texts.name = this.add.text( shapeSave.x + 40 + shapeSave.height, shapeSave.y + 20, i == 0 ? 'Gravelord Eru' : 'John Titor', {
         fontFamily: font.Title,
         fontSize: '20px'
@@ -444,9 +482,7 @@ export default class extends Phaser.Scene {
 
   //#region joypad
   checkJoypad(){
-    
-    if (this.joypadAdded || this.input.gamepad.total === 0)
-    {
+    if (this.joypadAdded || this.input.gamepad.total === 0) {
       return;
     }
     this.input.gamepad.pad1.on('down', (pad, button, value) => {
@@ -462,7 +498,7 @@ export default class extends Phaser.Scene {
       return;
     }
 
-    var debug = [];
+    var debug: Array<any> = [];
     var pads = this.input.gamepad.gamepads;
     // var pads = this.input.gamepad.getAll();
     // var pads = navigator.getGamepads();
@@ -471,8 +507,7 @@ export default class extends Phaser.Scene {
     {
         var pad = pads[i];
 
-        if (!pad)
-        {
+        if (!pad) {
             continue;
         }
 
@@ -484,8 +519,7 @@ export default class extends Phaser.Scene {
 
         var buttons = '';
 
-        for (var b = 0; b < pad.buttons.length; b++)
-        {
+        for (var b = 0; b < pad.buttons.length; b++) {
             var button = pad.buttons[b];
 
             buttons = buttons.concat('B' + button.index + ': ' + button.value + '  ');
@@ -522,7 +556,7 @@ export default class extends Phaser.Scene {
         debug.push('');
     }
     
-    this.textJoypadInfo.setText(debug);
+    // this.textJoypadInfo.setText(debug);
   }
   //#endregion
 }
