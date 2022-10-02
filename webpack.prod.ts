@@ -5,7 +5,6 @@ import common from './webpack.common';
 const merge = require('webpack-merge');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
  
 const config: Configuration = merge(common, {
@@ -40,9 +39,6 @@ const config: Configuration = merge(common, {
       },
       hash: true
     }),
-  //   new CleanWebpackPlugin({
-  //     root: path.resolve(__dirname, './')
-  //   }),
     new CopyPlugin({
       patterns: [
         // { from: 'src/assets', to: 'assets' }

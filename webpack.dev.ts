@@ -6,8 +6,6 @@ const merge = require('webpack-merge');
 
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
-// const CopyPlugin = require('copy-webpack-plugin');
 
 const definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),

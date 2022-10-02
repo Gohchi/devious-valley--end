@@ -23,7 +23,6 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "parcel": "^2.7.0",
     "phaser": "^3.54.0",
     "webfontloader": "^1.6.28"
   },
@@ -32,13 +31,10 @@
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-typescript": "^7.18.6",
     "@babel/register": "^7.18.9",
-    "@parcel/babel-preset-env": "^2.7.0",
-    "@parcel/transformer-sass": "^2.7.0",
     "@webpack-cli/serve": "^1.7.0",
     "babel-loader": "^8.2.5",
     "browser-sync": "^2.26.14",
     "browser-sync-webpack-plugin": "^2.2.2",
-    "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.4.1",
     "cross-env": "^7.0.3",
     "download-cli": "^1.0.1",
@@ -50,10 +46,8 @@
     "html-webpack-plugin": "^4.2.0",
     "node-sass": "^7.0.1",
     "npm-run-all": "^4.1.5",
-    "parcel-plugin-static-files-copy": "^2.6.0",
     "raw-loader": "^4.0.1",
     "rimraf": "^3.0.2",
-    "terser-webpack-plugin": "^2.3.5",
     "ts-loader": "^8.1.0",
     "tslint": "^6.1.3",
     "typescript": "^4.7.4",
