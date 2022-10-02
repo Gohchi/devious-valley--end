@@ -10,16 +10,14 @@ const phaser = path.join(phaserModule, 'src/phaser.js');
 
 const config: Configuration = {
   entry: {
-    app: [
-      path.resolve(__dirname, 'src/game.ts')
-    ],
+    app: path.resolve(__dirname, 'src/game.ts'),
     vendor: ['phaser']
   },
   output: {
     pathinfo: true,
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: 'bundle.[name].js'
   },
   module: {
     rules: [

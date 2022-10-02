@@ -20,7 +20,7 @@ const config: Configuration = merge(common, {
     pathinfo: true,
     path: path.resolve(__dirname, 'dist'),
     publicPath: './',
-    filename: 'bundle.min.js'
+    filename: 'bundle.[name].min.js'
   },
   plugins: [
     new HtmlWebpackPlugin({

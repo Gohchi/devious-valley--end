@@ -18,6 +18,7 @@
     "debug:electron": "cross-env ELECTRON_DEBUG=vscode electron --remote-debugging-port=9223 build/main.js",
     "dist:electron": "npm run clean && npm run build && electron-builder",
     "electron-builder": "electron-builder build",
+    "build:electron": "npm run build && tsc",
     "electron": "electron .",
     "tsc": "tsc"
   },
