@@ -12,6 +12,7 @@ import tileset01Png from '../assets/tilesets/tileset01.png';
 import map01Json from '../assets/tilesets/map01.json';
 
 import abyss01Mp3 from '../assets/audio/songs/abyss01.mp3';
+import { getPointer } from '../utils/tools';
 
 export class Game2Scene extends Phaser.Scene {
   private debug: boolean | Phaser.Types.Physics.Matter.MatterDebugConfig | undefined;
@@ -24,7 +25,7 @@ export class Game2Scene extends Phaser.Scene {
   private ground2: any;
   private cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl | any;
 
-  constructor () {
+  constructor() {
     super({ key: 'Game2Scene' })
     
     this.ship = new Ship();
@@ -32,8 +33,8 @@ export class Game2Scene extends Phaser.Scene {
       force: 0
     }
   }
-  preload ()
-  {
+
+  preload() {
     // //  Load sprite sheet generated with TexturePacker
     this.load.atlas('sheet', fruitSpritesPng, fruitSpritesJson);
     
@@ -51,9 +52,9 @@ export class Game2Scene extends Phaser.Scene {
     Ship.prepare( this );
   }
 
-  create ()
-  {
+  create() {
     this.debug = !!this.sys.game.config.physics.matter && this.sys.game.config.physics.matter.debug;
+    // CAMERA
     {
       this.cameras.main.zoom = 1;
       // let cursors = this.input.keyboard.createCursorKeys();
@@ -79,10 +80,13 @@ export class Game2Scene extends Phaser.Scene {
       this.ship.create( this );
       this.debugData.force = 0.01;
     }
+
+    // MUSIC
     {
       this.currentSong = this.sound.add('main-song', {volume: 1});
       this.currentSong.play();
     }
+    
     // GAME
     {
         
@@ -108,11 +112,35 @@ export class Game2Scene extends Phaser.Scene {
         // .setBody(shapes.banana)
       ;
       
+      const pointer = getPointer( this.game );
+      // const touch = this.game.input.touch;
+      const gameWidth = +this.sys.game.config.width;
+      const gameHeight = +this.sys.game.config.height;
       if(this.debug){
-        this.debugInfo = new Debug( this, 500, 200 );
+        this.debugInfo = new Debug( this, -150, -200 );
         this.debugInfo
           .add(() => "Force: " + this.ship.getValue( 'force' ))
           .add(() => "Lock: " + this.ship.getValue( 'lock' ))
+          // .add(() => "Ship X: " + this.ship.image.x)
+          // .add(() => "Ship Y: " + this.ship.image.y)
+          .add(() => "Pointer Angle: " + pointer.getAngle())
+          .add(() => "Pointer Distance: " + pointer.getDistance())
+          .add(() => "Pointer X: " + pointer.x)
+          .add(() => "Pointer Y: " + pointer.y)
+          // .add(() => "Pointer Distance: " + pointer.getDistance())
+          // .add(() => "Camera Y: " + this.cameras.main.midPoint.y)
+          // .add(() => "delta X: " + (this.ship.image.x - this.cameras.main.midPoint.x))
+          // .add(() => "delta Y: " + (this.ship.image.y - this.cameras.main.midPoint.y))
+          // .add(() => "Pointer X: " + (pointer.x - (gameWidth / 2)))
+          // .add(() => "Pointer Y: " + (pointer.y - (gameHeight / 2)))
+          // .add(() => "Diff X: " + (pointer.x - (gameWidth / 2) - (this.ship.image.x - this.cameras.main.midPoint.x)))
+          // .add(() => "Diff Y: " + (pointer.y - (gameHeight / 2) - (this.ship.image.y - this.cameras.main.midPoint.y)))
+          .add(() => "distance: " + (() => {
+            const x = (pointer.x - (gameWidth / 2) - (this.ship.image.x - this.cameras.main.midPoint.x));
+            const y = (pointer.y - (gameHeight / 2) - (this.ship.image.y - this.cameras.main.midPoint.y));
+            return Math.sqrt(x*x + y*y);
+          })())
+          .add(() => "Pointer isDown: " + pointer.isDown)
           .add(() => "Acc: " + Math.round((this.ship.getValue( 'force_acc') + Number.EPSILON ) * 10000) / 10000)
           // .add(() => "Angle: " + Math.round(this.player.sprite.angle))
           // .add(() => "On ground: " + this.player.playerOnGround)
@@ -145,7 +173,7 @@ export class Game2Scene extends Phaser.Scene {
 
   }
 
-  update(time, delta){
+  update(time, delta) {
     this.cameraControls.update(delta);
     // test spaceship
     this.ship.update( this ); // this, time, delta );
@@ -164,7 +192,7 @@ export class Game2Scene extends Phaser.Scene {
     // this.player.update();
   }
 
-  createGround(){
+  createGround() {
     const globalWidth: number = +this.sys.game.config.width;
     const baseGround = 500;
     this.matter.add

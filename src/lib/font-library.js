@@ -1,3 +1,3 @@
 export const font = {
-  Title: 'adobe-garamond-pro'
+  Title: 'Cormorant Garamond'
 }

@@ -42,6 +42,13 @@ const config: Configuration = {
         }
       },
       {
+        test: /\.(woff(2)?|ttf|eot|otf)$/,
+        type: 'asset/resource',
+        // generator: {
+        //   filename: './fonts/[name][ext]',
+        // },
+      },
+      {
         test: /\.(png|jpe?g|gif|svg|xml|mp3)$/i,
         type: 'asset/resource'
       }

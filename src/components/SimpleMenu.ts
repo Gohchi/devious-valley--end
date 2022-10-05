@@ -52,9 +52,8 @@ export default class SimpleMenu {
     // text object creation
     let textRef = this.scene.add.text( this.x, this.y + lineHeight * this.list.length, text, this.style).setOrigin(0.5, 0.5);
 
-    // if( this.style.shadow ) {
-    //   textRef.setShadow(5, 5, 'rgba(0,0,0,0.5)', 15);
-    // }
+    textRef.setInteractive({ useHandCursor: true })
+      .on('pointerdown', action);
     
     // added to the list
     this.list.push( textRef );

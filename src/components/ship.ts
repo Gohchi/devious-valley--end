@@ -6,18 +6,19 @@ import spaceShapeJson from '../assets/tests/space/space-shapes.json';
 
 import impulseLoadMp3 from '../assets/audio/impulse-load.mp3';
 import impulseReleaseMp3 from '../assets/audio/impulse-release.mp3';
+import { getPointer } from '../utils/tools';
 
 export class Ship {
   private cursors: any;
-  private image: any;
+  public image: Phaser.Physics.Matter.Image | any;
   private values: any;
   private events: any;
   private keys: any;
   private sounds: any = {};
-
+  // private onScreenButtons: any = {};
+  
   constructor(){
     this.cursors = null;
-    this.image = null;
     this.values = {
       lerp: 0.05,
       originalForce: 0.01,
@@ -46,14 +47,19 @@ export class Ship {
     // CAMERA
     {
       const camera = scene.cameras.main;
-      this.keys.space.on('down', e => {
+      const handlerDown = () => {
         camera.zoomTo(2, 4000, 'Power2', true);
         camera.shake(1000000, 0.0006, true); // infinite shake
-      });
-      this.keys.space.on('up', e => {
+      };
+      const handlerUp = () => {
         camera.shake(1, 0, true);
         camera.zoomTo(1, 2000, 'Power2', true);
-      });
+      };
+      this.keys.space.on('down', handlerDown);
+      this.keys.space.on('up', handlerUp);
+
+      scene.input.on('pointerdown', handlerDown);
+      scene.input.on('pointerup', handlerUp);
     }
     
     // SOUNDS
@@ -152,14 +158,39 @@ export class Ship {
     // this.matter.world.setBounds(0, 0, 800, 600);
 
     this.cursors = scene.input.keyboard.createCursorKeys();
+
+    // test buttons on screen
+    // const gameWidth = +scene.sys.game.config.width;
+    // const gameHeight = +scene.sys.game.config.height;
+    // [
+    //   { w: 100, h: gameHeight - 40, key: 'DOWN', color: 0xff0000 },
+    //   { w: 50, h: gameHeight - 80, key: 'LEFT', color: 0x00ff00 },
+    //   { w: 150, h: gameHeight - 80, key: 'RIGHT', color: 0x0000ff },
+    //   { w: 100, h: gameHeight - 120, key: 'UP', color: 0xffff00 },
+    //   { w: gameWidth - 70, h: gameHeight - 80, key: 'ACTION', color: 0xffffff, radius: 50 },
+    // ].forEach(o => {
+    //   // const text = scene.add.text( o.w, o.h, o.text, {
+    //   //   fontSize: '22px'
+    //   // }).setOrigin(.5, .5)
+    //   this.onScreenButtons[o.key] = scene.add.circle(o.w, o.h, o.radius || 25, o.color)
+    //     .setInteractive({ useHandCursor: true })
+    //     .on('pointerdown', function() { console.log(o.key); })
+    //     .setScrollFactor(0);
+    // })
+    // text.body.gameObject.startFollow( image )
   }
 
   update( scene: Phaser.Scene | any ) { //, time, delta ){
     let { originalForce, lock, launch, force_acc } = this.values;
 
-    if( this.cursors.space.isDown ){
+    const pointer = getPointer( scene.game );
+
+    if( !pointer.isDown && this.events.launchEvent && typeof this.events.launchEvent === 'function' ){
+      this.events.launchEvent();
+    }
+
+    if( this.cursors.space.isDown || pointer.isDown ){
       const step_force = 0.06, max_force = 2;
-      
       
       if(!this.sounds['impulse-load'].isPlaying){
         this.sounds['impulse-load'].play();
@@ -174,35 +205,69 @@ export class Ship {
 
       if( !this.events.launchEvent ){
         this.setValue( 'force', originalForce * 0.2 );
-        this.events.launchEvent = this.keys.space.once('up', e => {
-          this.sounds['impulse-load'].stop();
 
-          if(scene.currentSong.isPlaying){
-            scene.currentSong.volume = 1;
-          }
+        if( pointer.isDown ){
+          this.events.launchEvent = () => {
+            this.sounds['impulse-load'].stop();
+            
+            if(scene.currentSong.isPlaying){
+              scene.currentSong.volume = 1;
+            }
 
-          console.log( 'space up!' );
-          // if force_acc is pressed for a while, it launchs
-          const fa = this.getValue( 'force_acc' );
-          const pressed = fa >= 1 ? this.addThrustByCursors( fa ) : 0;
+            console.log( 'pointer up!' );
 
-          this.setValue( 'force_acc', 0.01 );
-          
-          if( !pressed ){
+            if( pointer.getDistance() > 100 ) {
+              const fa = this.getValue( 'force_acc' );
+              this.addThrustByPointer( fa, pointer.getAngle());
+    
+              this.setValue( 'force_acc', 0.01 );
+              
+              this.sounds['impulse-release'].play();
+    
+              this.setValue( 'lock', true );
+              setTimeout( _ => {
+                this.setValue( 'lock', false );
+                this.events.launchEvent = null;
+                this.setValue( 'force', originalForce );
+              }, 1000 );
+            } else {
+              this.setValue( 'force', originalForce );
+            }
+
             this.events.launchEvent = null;
-            this.setValue( 'force', originalForce );
-            return;
-          }
-
-          this.sounds['impulse-release'].play();
-
-          this.setValue( 'lock', true );
-          setTimeout( _ => {
-            this.setValue( 'lock', false );
-            this.events.launchEvent = null;
-            this.setValue( 'force', originalForce );
-          }, 1000 );
-        });
+          };
+        } else 
+        if( this.cursors.space.isDown ) {
+          this.events.launchEvent = this.keys.space.once('up', e => {
+            this.sounds['impulse-load'].stop();
+  
+            if(scene.currentSong.isPlaying){
+              scene.currentSong.volume = 1;
+            }
+  
+            console.log( 'space up!' );
+            // if force_acc is pressed for a while, it launchs
+            const fa = this.getValue( 'force_acc' );
+            const pressed = fa >= 1 ? this.addThrustByCursors( fa ) : 0;
+  
+            this.setValue( 'force_acc', 0.01 );
+            
+            if( !pressed ){
+              this.events.launchEvent = null;
+              this.setValue( 'force', originalForce );
+              return;
+            }
+  
+            this.sounds['impulse-release'].play();
+  
+            this.setValue( 'lock', true );
+            setTimeout( _ => {
+              this.setValue( 'lock', false );
+              this.events.launchEvent = null;
+              this.setValue( 'force', originalForce );
+            }, 1000 );
+          });
+        }
       }
     }
     if ( !lock ){
@@ -221,8 +286,17 @@ export class Ship {
   getValue( key ) {
     return this.values[key];
   }
-  
-  addThrustByCursors( force: Number = 0 ) {
+
+  addThrustByPointer( force: number = 0, angle: number ) {
+    const image = this.image;
+    force = force || this.getValue('force');
+    image.applyForceFrom(
+      new Phaser.Math.Vector2(image.x, image.y),
+      (new Phaser.Math.Vector2( force, 0).setAngle(angle))
+    );
+  }
+
+  addThrustByCursors( force: number = 0 ) {
     const image = this.image;
     force = force || this.getValue('force');
     const { left, up, right, down } = this.cursors;
@@ -236,7 +310,7 @@ export class Ship {
         case 'down': obj = { x: 0, y: force }; break;
       }
       image.applyForceFrom(
-        { x: image.x, y: image.y },
+        new Phaser.Math.Vector2(image.x, image.y),
         obj,
 			);
     };

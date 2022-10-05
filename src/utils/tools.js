@@ -46,6 +46,13 @@ import Phaser from 'phaser'
 
 const storeKey = 'FP-SLOTS-GLOBAL_STATE'
 
+export const getPointer = (game) => {
+  if( game.device.os.desktop )
+    return game.input.pointers[0];
+  // return game.input.activePointer;
+  
+  return game.input.pointers[1];
+}
 export const checkStates = () => {
   const globalState = localStorage.getItem(storeKey)
   const initialState = globalState ? JSON.parse(globalState) : {} //undefined
