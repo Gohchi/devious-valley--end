@@ -58,12 +58,18 @@ const config: Configuration = {
     new webpack.DefinePlugin({
       CANVAS_RENDERER: JSON.stringify(true),
       WEBGL_RENDERER: JSON.stringify(true)
-    })
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
       'phaser': phaser,
+    },
+    fallback: {
+      "buffer": require.resolve("buffer/")
     }
   }
 };

@@ -1,4 +1,6 @@
+import { getTitleByStatus } from './tools';
+
 export const text = {
-  Title: 'DEVIOUS VALLEƳ',
+  Title: getTitleByStatus(),
   Version: '--end'
 }
